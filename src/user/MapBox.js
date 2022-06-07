@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 import EventMarkerContainer from './EventMarkerContainer';
 import Button from './Components/Buttons/Button';
-import dd from '../user/csvjson.json';
+import List from './List';
 import './MapBox.scss';
 import styled from 'styled-components';
 
@@ -27,7 +27,7 @@ const MapBox = () => {
 	const [filterList, setFilterList] = useState([]);
 	const [selectedCategory, setSelectedCategory] = useState('ev');
 	const [level, setLevel] = useState(4);
-	const [area, setArea] = useState({});
+	const [area, setArea] = useState(null);
 	const [meta, setMeta] = useState([
 		{
 			type: [
@@ -134,7 +134,7 @@ const MapBox = () => {
 
 	const handleFilter = (option, id) => {
 		if (filterList.includes(`${option}=${id}`)) {
-			setFilterList(filterList.filter(stack => stack !== `${option}=${id}`).sort());
+			setFilterList(filterList.filter(list => list !== `${option}=${id}`));
 		} else {
 			setFilterList(prev => [...prev, `${option}=${id}`]);
 		}
@@ -144,24 +144,54 @@ const MapBox = () => {
 	const [cafes, setCafes] = useState([]);
 
 	useEffect(() => {
+		if (area === null) {
+			return;
+		}
+
 		fetch(
-			`http://172.20.10.7:8000/cafes?SW_latitude=${area.SW?.Ma.toString()}&SW_longitude=${area.SW?.La.toString()}&NE_latitude=${area.NE?.Ma.toString()}&NE_longitude=${area.NE?.La.toString()}`,
+			`http://54.180.104.23:8000/cafes?SW_latitude=${area.SW?.Ma.toString()}&SW_longitude=${area.SW?.La.toString()}&NE_latitude=${area.NE?.Ma.toString()}&NE_longitude=${area.NE?.La.toString()}`,
 		)
 			.then(res => res.json())
 			.then(data => {
 				setCafes(prev => [...prev, ...data.results]);
+				// console.log(data);
 			});
 		fetch(
-			`http://172.20.10.7:8000/evs?SW_latitude=${area.SW?.Ma.toString()}&SW_longitude=${area.SW?.La.toString()}&NE_latitude=${area.NE?.Ma.toString()}&NE_longitude=${area.NE?.La.toString()}`,
+			`http://54.180.104.23:8000/evs?SW_latitude=${area.SW?.Ma.toString()}&SW_longitude=${area.SW?.La.toString()}&NE_latitude=${area.NE?.Ma.toString()}&NE_longitude=${area.NE?.La.toString()}`,
 		)
 			.then(res => res.json())
 			.then(data => {
 				setEv(prev => [...prev, ...data.results]);
+				console.log(data);
 			});
 	}, [area]);
 
-	console.log('cafe', cafes);
-	console.log('ev', ev)
+	useEffect(() => {
+		if (state.center.lat === null) {
+			return;
+		}
+
+		fetch(
+			`http://54.180.104.23:8000/cafes/nearest?&user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
+		)
+			.then(res => res.json())
+			.then(data => {
+				setCafeNearest([data.results]);
+			});
+		fetch(
+			`http://54.180.104.23:8000/evs/nearest?user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
+		)
+			.then(res => res.json())
+			.then(data => {
+				setEvNearest([data.results]);
+			});
+	}, [state]);
+
+	const [evNearest, setEvNearest] = useState([]);
+	const [cafeNearest, setCafeNearest] = useState([]);
+
+	// console.log('cafe', cafes);
+	// console.log('ev', ev);
 
 	return (
 		<MapWrap>
@@ -206,6 +236,7 @@ const MapBox = () => {
 											spriteOrigin: coffeeOrigin,
 										},
 									}}
+									selectedCategory={selectedCategory}
 								/>
 							))}
 						{selectedCategory === 'ev' &&
@@ -222,6 +253,7 @@ const MapBox = () => {
 											spriteOrigin: evOrigin,
 										},
 									}}
+									selectedCategory={selectedCategory}
 								/>
 							))}
 					</MarkerClusterer>
@@ -257,27 +289,43 @@ const MapBox = () => {
 						1KM
 					</Btn>
 				</DistanceBtnWrap>
-				<TypeBtnWrap>
-					{meta[0].type.map((data, index) => (
-						<Button
-							key={index}
-							data={data.title}
-							isClicked={filterList.includes(`type_ids=${data.id}`)}
-							handleClick={() => handleFilter('type_ids', data.id)}
-						/>
-					))}
-				</TypeBtnWrap>
-				<BatteryBtnWrap>
-					{meta[0].battery.map((data, index) => (
-						<Button
-							key={index}
-							data={data.title}
-							isClicked={filterList.includes(`kw_ids=${data.id}`)}
-							handleClick={() => handleFilter('kw_ids', data.id)}
-						/>
-					))}
-				</BatteryBtnWrap>
+				{selectedCategory === 'ev' ? (
+					<>
+						<TypeBtnWrap>
+							{meta[0].type.map((data, index) => (
+								<Button
+									key={index}
+									data={data.title}
+									isClicked={filterList.includes(`type_ids=${data.id}`)}
+									handleClick={() => handleFilter('type_ids', data.id)}
+								/>
+							))}
+						</TypeBtnWrap>
+						<BatteryBtnWrap>
+							{meta[0].battery.map((data, index) => (
+								<Button
+									key={index}
+									data={data.title}
+									isClicked={filterList.includes(`kw_ids=${data.id}`)}
+									handleClick={() => handleFilter('kw_ids', data.id)}
+								/>
+							))}
+						</BatteryBtnWrap>
+					</>
+				) : (
+					<div></div>
+				)}
 			</BtnWrap>
+			<ListWrap>
+				{selectedCategory === 'ev' &&
+					cafeNearest.map((data, index) => (
+						<List selectedCategory={selectedCategory} key={index} data={data} />
+					))}
+				{selectedCategory === 'coffee' &&
+					evNearest.map((data, index) => (
+						<List selectedCategory={selectedCategory} key={index} data={data} />
+					))}
+			</ListWrap>
 		</MapWrap>
 	);
 };
@@ -288,17 +336,22 @@ const MapWrap = styled.div`
 	align-items: center;
 `;
 const BtnWrap = styled.div`
-	display: flex;
-	text-align: center;
 	width: 400px;
-	height: 200px;
 `;
-const DistanceBtnWrap = styled.div``;
-const BatteryBtnWrap = styled.div``;
-const TypeBtnWrap = styled.div``;
+const DistanceBtnWrap = styled.div`
+	margin-top: 10px;
+`;
+const BatteryBtnWrap = styled.div`
+	margin-top: 10px;
+`;
+const TypeBtnWrap = styled.div`
+	margin-top: 10px;
+`;
 
 const Btn = styled.button`
+	border-radius: 10px;
 	background-color: #3d8ba8;
+	height: 22px;
 	color: white;
 	border: none;
 `;
@@ -322,6 +375,14 @@ const SearchBtn = styled.button`
 
 const MapWrapper = styled.div`
 	position: relative;
+`;
+
+const ListWrap = styled.ul`
+	border: 1px solid rgba(0, 0, 0, 0.4);
+	border-radius: 10px;
+	max-height: 200px;
+	width: 350px;
+	overflow-y: auto;
 `;
 
 export default MapBox;
