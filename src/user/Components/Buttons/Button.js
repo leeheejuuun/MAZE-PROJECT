@@ -17,6 +17,8 @@ const Btn = styled.button`
 				background-color: #3d8ba8;
 				border: 1px solid rgba(0, 0, 0, 0.3);
 				color: #fff;
+				margin-right: 5px;
+				margin-bottom: 7px;
 			`;
 		} else {
 			return css`
@@ -24,6 +26,8 @@ const Btn = styled.button`
 				background-color: #fff;
 				border: 1px solid rgba(0, 0, 0, 0.3);
 				color: #3d8ba8;
+				margin-right: 5px;
+				margin-bottom: 7px;
 			`;
 		}
 	}};

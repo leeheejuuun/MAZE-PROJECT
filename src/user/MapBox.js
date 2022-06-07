@@ -134,7 +134,7 @@ const MapBox = () => {
 
 	const handleFilter = (option, id) => {
 		if (filterList.includes(`${option}=${id}`)) {
-			setFilterList(filterList.filter(list => list !== `${option}=${id}`));
+			setFilterList(filterList.filter(value => value !== `${option}=${id}`));
 		} else {
 			setFilterList(prev => [...prev, `${option}=${id}`]);
 		}
@@ -154,17 +154,35 @@ const MapBox = () => {
 			.then(res => res.json())
 			.then(data => {
 				setCafes(prev => [...prev, ...data.results]);
-				// console.log(data);
 			});
+
 		fetch(
-			`http://54.180.104.23:8000/evs?SW_latitude=${area.SW?.Ma.toString()}&SW_longitude=${area.SW?.La.toString()}&NE_latitude=${area.NE?.Ma.toString()}&NE_longitude=${area.NE?.La.toString()}`,
+			`http://54.180.104.23:8000/evs?SW_latitude=${area.SW?.Ma.toString()}&SW_longitude=${area.SW?.La.toString()}&NE_latitude=${area.NE?.Ma.toString()}&NE_longitude=${area.NE?.La.toString()}&${filterList.join(
+				'&',
+			)}`,
 		)
 			.then(res => res.json())
 			.then(data => {
-				setEv(prev => [...prev, ...data.results]);
-				console.log(data);
+				setEv(data.results);
 			});
-	}, [area]);
+	}, [area, filterList]);
+
+	// useEffect(() => {
+	// 	if (area === null) {
+	// 		return;
+	// 	}
+	// 	fetch(
+	// 		`http://54.180.104.23:8000/evs?SW_latitude=${area.SW?.Ma.toString()}&SW_longitude=${area.SW?.La.toString()}&NE_latitude=${area.NE?.Ma.toString()}&NE_longitude=${area.NE?.La.toString()}&${filterList.join(
+	// 			'&',
+	// 		)}`,
+	// 	)
+	// 		.then(res => res.json())
+	// 		.then(data => {
+	// 			setEv(data.results);
+	// 		});
+	// }, [filterList]);
+
+	console.log(filterList.join('&'));
 
 	useEffect(() => {
 		if (state.center.lat === null) {
@@ -190,9 +208,6 @@ const MapBox = () => {
 	const [evNearest, setEvNearest] = useState([]);
 	const [cafeNearest, setCafeNearest] = useState([]);
 
-	// console.log('cafe', cafes);
-	// console.log('ev', ev);
-
 	return (
 		<MapWrap>
 			<SearchWrap>
@@ -210,8 +225,8 @@ const MapBox = () => {
 					center={state.center}
 					style={{
 						// 지도의 크기
-						width: '400px',
-						height: '400px',
+						width: '350px',
+						height: '350px',
 					}}
 					level={level} // 지도의 확대 레벨
 					onTileLoaded={map => {
@@ -296,8 +311,8 @@ const MapBox = () => {
 								<Button
 									key={index}
 									data={data.title}
-									isClicked={filterList.includes(`type_ids=${data.id}`)}
-									handleClick={() => handleFilter('type_ids', data.id)}
+									isClicked={filterList.includes(`charger_types=${data.id}`)}
+									handleClick={() => handleFilter('charger_types', data.id)}
 								/>
 							))}
 						</TypeBtnWrap>
@@ -306,8 +321,8 @@ const MapBox = () => {
 								<Button
 									key={index}
 									data={data.title}
-									isClicked={filterList.includes(`kw_ids=${data.id}`)}
-									handleClick={() => handleFilter('kw_ids', data.id)}
+									isClicked={filterList.includes(`outputs=${data.id}`)}
+									handleClick={() => handleFilter('outputs', data.id)}
 								/>
 							))}
 						</BatteryBtnWrap>
@@ -331,12 +346,14 @@ const MapBox = () => {
 };
 
 const MapWrap = styled.div`
+	border: 1px solid black;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 `;
 const BtnWrap = styled.div`
-	width: 400px;
+	width: 350px;
 `;
 const DistanceBtnWrap = styled.div`
 	margin-top: 10px;
@@ -354,10 +371,11 @@ const Btn = styled.button`
 	height: 22px;
 	color: white;
 	border: none;
+	margin-right: 5px;
 `;
 const SearchWrap = styled.div``;
 const SearchInput = styled.input`
-	width: 364px;
+	width: 320px;
 	height: 50px;
 	padding: 0px;
 	outline: none;
@@ -369,7 +387,7 @@ const SearchBtn = styled.button`
 	color: white;
 	border: none;
 	height: 50px;
-	width: 36px;
+	width: 30px;
 	padding: 0px;
 `;
 
@@ -381,7 +399,7 @@ const ListWrap = styled.ul`
 	border: 1px solid rgba(0, 0, 0, 0.4);
 	border-radius: 10px;
 	max-height: 200px;
-	width: 350px;
+	width: 300px;
 	overflow-y: auto;
 `;
 
