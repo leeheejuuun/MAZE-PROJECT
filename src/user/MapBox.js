@@ -5,6 +5,29 @@ import Button from './Components/Buttons/Button';
 import List from './List';
 import './MapBox.scss';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCoffee, faL } from '@fortawesome/free-solid-svg-icons';
+import evMarkers from '../images/pngegg-removebg-preview.png';
+const meta = {
+	type: [
+		{ id: 1, title: 'DC차데모', num: '1,3,5,6' },
+		{ id: 2, title: 'AC완속', num: '2' },
+		{ id: 3, title: 'AC3상', num: '4,5,6' },
+		{ id: 4, title: 'DC콤보', num: '3,6,7' },
+	],
+	battery: [
+		{ id: 3, title: '3kw' },
+		{ id: 7, title: '7kw' },
+		{ id: 14, title: '14kw' },
+		{ id: 40, title: '40kw' },
+		{ id: 50, title: '50kw' },
+		{ id: 100, title: '100kw' },
+		{ id: 175, title: '175kw' },
+		{ id: 200, title: '200kw' },
+		{ id: 260, title: '260kw' },
+		{ id: 350, title: '350kw' },
+	],
+};
 
 const MapBox = () => {
 	const { kakao } = window;
@@ -23,34 +46,13 @@ const MapBox = () => {
 		errMsg: null,
 		isLoading: false,
 	});
+
 	// 다중필터링 담는 state
-	const [filterList, setFilterList] = useState([]);
+	const [filterTypeQuery, setFilterTypeQuery] = useState([]);
+	const [batteryQuery, setBatteryQuery] = useState([]);
 	const [selectedCategory, setSelectedCategory] = useState('ev');
 	const [level, setLevel] = useState(4);
 	const [area, setArea] = useState(null);
-	const [meta, setMeta] = useState([
-		{
-			type: [
-				{ id: 1, title: 'DC차데모' },
-				{ id: 2, title: 'AC완속' },
-				{ id: 3, title: 'AC상' },
-				{ id: 4, title: 'DC콤보' },
-			],
-			battery: [
-				{ id: 1, title: '3kw' },
-				{ id: 2, title: '7kw' },
-				{ id: 3, title: '50kw' },
-				{ id: 4, title: '14kw' },
-				{ id: 5, title: '40kw' },
-				{ id: 6, title: '50kw' },
-				{ id: 7, title: '100kw' },
-				{ id: 8, title: '175kw' },
-				{ id: 9, title: '200kw' },
-				{ id: 10, title: '260kw' },
-				{ id: 11, title: '350kw' },
-			],
-		},
-	]);
 
 	useEffect(() => {
 		if (navigator.geolocation) {
@@ -133,10 +135,18 @@ const MapBox = () => {
 	};
 
 	const handleFilter = (option, id) => {
-		if (filterList.includes(`${option}=${id}`)) {
-			setFilterList(filterList.filter(value => value !== `${option}=${id}`));
+		if (batteryQuery.includes(`${option}=${id}`)) {
+			setBatteryQuery(batteryQuery.filter(value => value !== `${option}=${id}`));
 		} else {
-			setFilterList(prev => [...prev, `${option}=${id}`]);
+			setBatteryQuery(prev => [...prev, `${option}=${id}`]);
+		}
+	};
+
+	const handleTypeFilter = num => {
+		if (filterTypeQuery.includes(`${num}`)) {
+			setFilterTypeQuery(filterTypeQuery.filter(value => value !== `${num}`));
+		} else {
+			setFilterTypeQuery(prev => [...prev, `${num}`]);
 		}
 	};
 
@@ -148,41 +158,37 @@ const MapBox = () => {
 			return;
 		}
 
-		fetch(
-			`http://54.180.104.23:8000/cafes?SW_latitude=${area.SW?.Ma.toString()}&SW_longitude=${area.SW?.La.toString()}&NE_latitude=${area.NE?.Ma.toString()}&NE_longitude=${area.NE?.La.toString()}`,
-		)
-			.then(res => res.json())
-			.then(data => {
-				setCafes(prev => [...prev, ...data.results]);
-			});
+		const types = [...new Set([...filterTypeQuery.join(',').split(',')])].sort().join('').slice();
+
+		if (selectedCategory === 'coffee') {
+			fetch(
+				`http://54.180.104.23:8000/cafes?${new URLSearchParams({
+					...area,
+				})}`,
+			)
+				.then(res => res.json())
+				.then(data => {
+					setCafes(prev => [...prev, ...data.results]);
+				});
+
+			return;
+		}
 
 		fetch(
-			`http://54.180.104.23:8000/evs?SW_latitude=${area.SW?.Ma.toString()}&SW_longitude=${area.SW?.La.toString()}&NE_latitude=${area.NE?.Ma.toString()}&NE_longitude=${area.NE?.La.toString()}&${filterList.join(
-				'&',
-			)}`,
+			`http://54.180.104.23:8000/evs?${batteryQuery.join('&')}&${new URLSearchParams({
+				...area,
+				charger_type_ids: types,
+			})}`,
 		)
 			.then(res => res.json())
 			.then(data => {
 				setEv(data.results);
+				console.log(data);
 			});
-	}, [area, filterList]);
-
-	// useEffect(() => {
-	// 	if (area === null) {
-	// 		return;
-	// 	}
-	// 	fetch(
-	// 		`http://54.180.104.23:8000/evs?SW_latitude=${area.SW?.Ma.toString()}&SW_longitude=${area.SW?.La.toString()}&NE_latitude=${area.NE?.Ma.toString()}&NE_longitude=${area.NE?.La.toString()}&${filterList.join(
-	// 			'&',
-	// 		)}`,
-	// 	)
-	// 		.then(res => res.json())
-	// 		.then(data => {
-	// 			setEv(data.results);
-	// 		});
-	// }, [filterList]);
-
-	console.log(filterList.join('&'));
+		// .catch(error => {
+		// 	console.log(error, 'error');
+		// });
+	}, [area, filterTypeQuery, batteryQuery, selectedCategory]);
 
 	useEffect(() => {
 		if (state.center.lat === null) {
@@ -204,7 +210,6 @@ const MapBox = () => {
 				setEvNearest([data.results]);
 			});
 	}, [state]);
-
 	const [evNearest, setEvNearest] = useState([]);
 	const [cafeNearest, setCafeNearest] = useState([]);
 
@@ -214,25 +219,31 @@ const MapBox = () => {
 				<SearchInput
 					placeholder="검색하고자 하는 시,군,구를 입력해주세요"
 					onChange={handleSearchAddress}
-				></SearchInput>
+				/>
 				<SearchBtn className="searchBtn" type="button" onClick={SearchMap}>
 					검색
 				</SearchBtn>
 			</SearchWrap>
 			<MapWrapper>
+				{/*
+
+			
+			*/}
 				<Map // 지도를 표시할 Container
-					id={`map`}
+					id="map"
 					center={state.center}
 					style={{
 						// 지도의 크기
 						width: '350px',
-						height: '350px',
+						height: '450px',
 					}}
 					level={level} // 지도의 확대 레벨
 					onTileLoaded={map => {
 						setArea({
-							SW: map.getBounds().getSouthWest(),
-							NE: map.getBounds().getNorthEast(),
+							SW_latitude: map.getBounds().getSouthWest().Ma.toString(),
+							SW_longitude: map.getBounds().getSouthWest().La.toString(),
+							NE_latitude: map.getBounds().getNorthEast().Ma.toString(),
+							NE_longitude: map.getBounds().getNorthEast().La.toString(),
 						});
 					}}
 				>
@@ -240,15 +251,20 @@ const MapBox = () => {
 						{selectedCategory === 'coffee' &&
 							cafes.map((data, index) => (
 								<EventMarkerContainer
-									key={index}
+									key={data.id}
 									position={{ lat: data.latitude, lng: data.longitude }}
 									data={data}
 									image={{
-										src: markerImageSrc,
-										size: imageSize,
+										src: 'https://littledeep.com/wp-content/uploads/2019/04/littledeep_illustration_coffee_png1.png', // 마커이미지의 주소입니다
+										size: {
+											width: 30,
+											height: 40,
+										}, // 마커이미지의 크기입니다
 										options: {
-											spriteSize: spriteSize,
-											spriteOrigin: coffeeOrigin,
+											offset: {
+												x: 27,
+												y: 69,
+											}, // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 										},
 									}}
 									selectedCategory={selectedCategory}
@@ -257,33 +273,40 @@ const MapBox = () => {
 						{selectedCategory === 'ev' &&
 							ev.map((data, index) => (
 								<EventMarkerContainer
-									key={index}
+									key={data.id}
 									position={{ lat: data.latitude, lng: data.longitude }}
 									data={data}
 									image={{
-										src: markerImageSrc,
-										size: imageSize,
+										src: 'https://www.urbanbrush.net/web/wp-content/uploads/edd/2021/10/urbanbrush-20211028113441405571.jpg', // 마커이미지의 주소입니다
+										size: {
+											width: 25,
+											height: 30,
+										}, // 마커이미지의 크기입니다
 										options: {
-											spriteSize: spriteSize,
-											spriteOrigin: evOrigin,
+											offset: {
+												x: 27,
+												y: 69,
+											}, // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 										},
 									}}
 									selectedCategory={selectedCategory}
 								/>
 							))}
 					</MarkerClusterer>
-					{!state.isLoading && <MapMarker position={state.center}></MapMarker>}
+
+					{!state.isLoading && <MapMarker position={state.center} />}
 				</Map>
 				{/* 지도 위에 표시될 마커 카테고리 */}
 
 				<div className="category">
 					<ul>
 						<li id="coffeeMenu" onClick={() => setSelectedCategory('coffee')}>
-							<span className="ico_comm ico_coffee"></span>
-							카페
+							<IconWrap>
+								<FontAwesomeIcon size="xl" className="coffeeIcon" icon={faCoffee} />
+							</IconWrap>
 						</li>
 						<li id="evMenu" onClick={() => setSelectedCategory('ev')}>
-							<span className="ico_comm ico_ev"></span>
+							{/* <span className="ico_comm ico_ev"></span> */}
 							충전소
 						</li>
 					</ul>
@@ -301,34 +324,34 @@ const MapBox = () => {
 						500m
 					</Btn>
 					<Btn type="button" value="1KM" onClick={handleClickDistance}>
-						1KM
+						1km
 					</Btn>
 				</DistanceBtnWrap>
 				{selectedCategory === 'ev' ? (
 					<>
 						<TypeBtnWrap>
-							{meta[0].type.map((data, index) => (
+							{meta.type.map((data, index) => (
 								<Button
 									key={index}
 									data={data.title}
-									isClicked={filterList.includes(`charger_types=${data.id}`)}
-									handleClick={() => handleFilter('charger_types', data.id)}
+									isClicked={filterTypeQuery.includes(`${data.num}`)}
+									handleClick={() => handleTypeFilter(data.num)}
 								/>
 							))}
 						</TypeBtnWrap>
 						<BatteryBtnWrap>
-							{meta[0].battery.map((data, index) => (
+							{meta.battery.map((data, index) => (
 								<Button
 									key={index}
 									data={data.title}
-									isClicked={filterList.includes(`outputs=${data.id}`)}
+									isClicked={batteryQuery.includes(`outputs=${data.id}`)}
 									handleClick={() => handleFilter('outputs', data.id)}
 								/>
 							))}
 						</BatteryBtnWrap>
 					</>
 				) : (
-					<div></div>
+					<div />
 				)}
 			</BtnWrap>
 			<ListWrap>
@@ -346,8 +369,8 @@ const MapBox = () => {
 };
 
 const MapWrap = styled.div`
-	border: 1px solid black;
-	width: 100%;
+	/* border: 1px solid black;
+	width: 100%; */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -401,6 +424,10 @@ const ListWrap = styled.ul`
 	max-height: 200px;
 	width: 300px;
 	overflow-y: auto;
+`;
+
+const IconWrap = styled.span`
+	margin-top: 10px;
 `;
 
 export default MapBox;

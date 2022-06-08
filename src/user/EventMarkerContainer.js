@@ -5,8 +5,11 @@ import styled from 'styled-components';
 export default function EventMarkerContainer({ data, position, image, selectedCategory }) {
 	const [isVisible, setIsVisible] = useState(false);
 
+	const handleOpen = () => {
+		setIsVisible(prev => !prev);
+	};
 	return (
-		<MapMarker position={position} onClick={() => setIsVisible(prev => !prev)} image={image}>
+		<MapMarker position={position} onClick={handleOpen} image={image}>
 			{isVisible && (
 				<div>
 					{selectedCategory === 'ev' ? (
@@ -49,7 +52,7 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 										))}
 									</ChargerWrap>
 								</div>
-								<div className="close" onClick={() => setIsVisible(prev => !prev)}></div>
+								<div className="close" onClick={() => setIsVisible(prev => !prev)} />
 							</div>
 						</div>
 					) : (
@@ -63,7 +66,7 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 										</MetaTitle>
 									</MetaWrap>
 								</div>
-								<div className="close" onClick={() => setIsVisible(prev => !prev)}></div>
+								<div className="close" onClick={() => setIsVisible(prev => !prev)} />
 							</div>
 						</div>
 					)}
@@ -74,8 +77,8 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 }
 
 const MetaWrap = styled.div`
-	margin-top: 20px;
-	margin-bottom: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 `;
 const ChargerWrap = styled.div`
 	display: flex;
