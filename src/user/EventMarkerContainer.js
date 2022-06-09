@@ -8,6 +8,7 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 	const handleOpen = () => {
 		setIsVisible(prev => !prev);
 	};
+
 	return (
 		<MapMarker position={position} onClick={handleOpen} image={image}>
 			{isVisible && (
@@ -21,14 +22,22 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 										<MetaTitle>
 											{' '}
 											주소 : <MetaContent>{data.road_name_address}</MetaContent>
+											<Directions
+												href={`https://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
+												target="_blank"
+												rel="noreferrer"
+											>
+												길찾기
+											</Directions>
 										</MetaTitle>
+
 										<MetaTitle>
 											주차 가능여부 Y / N : <MetaContent>{data.parking_free_yes_or_no}</MetaContent>
 										</MetaTitle>
 										<MetaTitle>
 											출입 정보 :{' '}
 											<MetaContent>
-												{data.limit_detail === '' ? '시설정보 없음' : data.limit_detail}
+												{data.limit_detail === '' ? '정보 없음' : data.limit_detail}
 											</MetaContent>
 										</MetaTitle>
 										<MetaTitle>
@@ -44,9 +53,14 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 											<MetaList key={index}>
 												<MetaListTitle>
 													{data.charger_type} :{' '}
-													<MetaContent>
-														{data.charging_status === '' ? '상태 미확인' : data.charging_status}
-													</MetaContent>
+													<StatusWrap
+														unidentified={data.charging_status === '상태미확인'}
+														charging={data.charging_status === '충전 중'}
+														stop={data.charging_status === '운영중지'}
+														inspection={data.charging_status === '점검 중'}
+													>
+														{data.charging_status}
+													</StatusWrap>
 												</MetaListTitle>
 											</MetaList>
 										))}
@@ -78,15 +92,14 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 
 const MetaWrap = styled.div`
 	margin-top: 10px;
-	margin-bottom: 10px;
+	/* margin-bottom: 10px; */
 `;
 const ChargerWrap = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: flex-start;
-	/* margin-top: 20px; */
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 `;
 
 const MetaTitle = styled.div`
@@ -100,9 +113,22 @@ const MetaContent = styled.span`
 	font-weight: 400;
 `;
 
+const StatusWrap = styled.span`
+	font-size: 13px;
+	font-weight: 400;
+	color: ${props =>
+		props.unidentified || props.stop || props.inspection || props.charging ? 'red' : 'blue'};
+`;
+
 const MetaList = styled.li``;
 
 const MetaListTitle = styled.span`
 	font-size: 15px;
 	font-weight: 600;
+`;
+const Directions = styled.a`
+	color: blue;
+	outline: none;
+	margin-left: 4px;
+	font-size: 5px;
 `;

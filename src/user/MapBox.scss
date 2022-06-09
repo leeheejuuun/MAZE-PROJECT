@@ -27,8 +27,8 @@
 	height: 40px;
 	background: #eee;
 	border-bottom: 1px solid #ddd;
-	font-size: 18px;
-	font-weight: bold;
+	font-size: 15px;
+	font-weight: 900;
 }
 .info .close {
 	position: absolute;
@@ -77,7 +77,7 @@
 }
 
 .info .link {
-	color: #5085bb;
+	color: #14c9f2;
 }
 
 .category,
@@ -94,17 +94,18 @@
 	width: 100px;
 	height: 50px;
 	z-index: 10;
-	border: 1px solid rgba(0, 0, 0, 0.3);
+	border: 1px solid rgba(0, 0, 0, 0.2);
 	font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
 	font-size: 12px;
 	text-align: center;
 	background-color: #fff;
 }
+
 .category .menu_selected {
-	background: #3d8ba8;
+	background: #14c9f2;
 	color: #fff;
-	border-left: 1px solid #915b2f;
-	border-right: 1px solid #915b2f;
+	border-left: 1px solid rgba(0, 0, 0, 0.2);
+	border-right: 1px solid rgba(0, 0, 0, 0.2);
 	margin: 0 -1px;
 }
 .category li {
@@ -115,20 +116,28 @@
 	padding-top: 5px;
 	cursor: pointer;
 }
-.category .ico_comm {
-	display: block;
-	margin: 0 auto 2px;
-	width: 22px;
-	height: 26px;
-	background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/category.png') no-repeat;
-}
-.category .ico_coffee {
-	background-position: -10px 0;
-}
-.category .ico_ev {
-	background-position: -10px -36px;
+// .category .ico_comm {
+// 	display: block;
+// 	margin: 0 auto 2px;
+// 	width: 22px;
+// 	height: 26px;
+// 	background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/category.png') no-repeat;
+// }
+// .category .ico_coffee {
+// 	background-position: -10px 0;
+// }
+// .category .ico_ev {
+// 	background-position: -10px -36px;
+// }
+
+#coffeeMenu {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
 }
 
-.coffeeIcon {
-	margin-top: 13px;
+#evMenu {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
 }
