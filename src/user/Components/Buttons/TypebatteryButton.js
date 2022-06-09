@@ -18,7 +18,6 @@ const Btn = styled.button`
 				border: 1px solid rgba(0, 0, 0, 0.1);
 				color: #fff;
 				margin-right: 5px;
-				/* margin-bottom: 7px; */
 			`;
 		} else {
 			return css`
@@ -27,7 +26,6 @@ const Btn = styled.button`
 				border: 1px solid rgba(0, 0, 0, 0.2);
 				color: #14c9f2;
 				margin-right: 5px;
-				/* margin-bottom: 7px; */
 			`;
 		}
 	}};

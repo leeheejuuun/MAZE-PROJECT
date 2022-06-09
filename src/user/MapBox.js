@@ -5,10 +5,8 @@ import TypebatteryButton from './Components/Buttons/TypebatteryButton';
 import List from './List';
 import './MapBox.scss';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCoffee, faChargingStation } from '@fortawesome/free-solid-svg-icons';
 import DistanceButton from './Components/Buttons/DistanceButton';
-import evImg from '../images/6395411-removebg-preview.png';
+
 const meta = {
 	type: [
 		{ id: 1, title: 'DC차데모', num: '1,3,5,6' },
@@ -32,16 +30,10 @@ const meta = {
 
 const MapBox = () => {
 	const { kakao } = window;
-	// const markerImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/category.png';
-	// const imageSize = { width: 22, height: 26 };
-	// const spriteSize = { width: 36, height: 98 };
-	// const coffeeOrigin = { x: 10, y: 0 };
-	// const evOrigin = { x: 10, y: 36 };
 
 	const [state, setState] = useState({
 		// 지도의 초기 위치
 		center: { lat: null, lng: null },
-
 		// 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
 		isPanto: true,
 		errMsg: null,
@@ -59,6 +51,7 @@ const MapBox = () => {
 	const [cafes, setCafes] = useState([]);
 	const [evNearest, setEvNearest] = useState([]);
 	const [cafeNearest, setCafeNearest] = useState([]);
+	const [searchAddress, setSearchAddress] = useState();
 
 	useEffect(() => {
 		if (navigator.geolocation) {
@@ -105,8 +98,7 @@ const MapBox = () => {
 		}
 	}, [selectedCategory]);
 
-	const [searchAddress, setSearchAddress] = useState();
-
+	// 검색기능
 	const handleSearchAddress = e => {
 		setSearchAddress(e.target.value);
 	};
@@ -130,6 +122,7 @@ const MapBox = () => {
 		window.location.reload();
 	};
 
+	// 버튼 클릭시 반경 조정
 	const handleClickDistance = e => {
 		if (e.target.value === '250m') {
 			setLevel(5);
@@ -140,7 +133,8 @@ const MapBox = () => {
 		}
 	};
 
-	const handleFilter = (option, id) => {
+	// 배터리용량 필터링
+	const handleBatteryFilter = (option, id) => {
 		if (filterBatteryQuery.includes(`${option}=${id}`)) {
 			setFilterBatteryQuery(filterBatteryQuery.filter(value => value !== `${option}=${id}`));
 		} else {
@@ -148,6 +142,7 @@ const MapBox = () => {
 		}
 	};
 
+	// 충전기 타입 필터링
 	const handleTypeFilter = num => {
 		if (filterTypeQuery.includes(`${num}`)) {
 			setFilterTypeQuery(filterTypeQuery.filter(value => value !== `${num}`));
@@ -155,6 +150,8 @@ const MapBox = () => {
 			setFilterTypeQuery(prev => [...prev, `${num}`]);
 		}
 	};
+
+	// 충전소 , 카페 지도에 뿌려주는 fetch
 
 	useEffect(() => {
 		if (area === null) {
@@ -164,7 +161,6 @@ const MapBox = () => {
 		const types = [...new Set([...filterTypeQuery.join(',').split(',')])].sort().join('').slice();
 
 		// if (selectedCategory === 'coffee') {
-
 		// 	return;
 		// }
 
@@ -191,6 +187,8 @@ const MapBox = () => {
 				console.log('ev', data);
 			});
 	}, [area, filterTypeQuery, filterBatteryQuery, selectedCategory]);
+
+	// 가까운 카페 및 충전소 받아오는 fetch
 
 	useEffect(() => {
 		if (state.center.lat === null) {
@@ -225,6 +223,7 @@ const MapBox = () => {
 					검색
 				</SearchBtn>
 			</SearchWrap>
+
 			<MapWrapper>
 				<Map // 지도를 표시할 Container
 					id="map"
@@ -232,7 +231,7 @@ const MapBox = () => {
 					style={{
 						// 지도의 크기
 						width: '350px',
-						height: '400px',
+						height: '370px',
 					}}
 					level={level} // 지도의 확대 레벨
 					onTileLoaded={map => {
@@ -252,8 +251,6 @@ const MapBox = () => {
 									position={{ lat: data.latitude, lng: data.longitude }}
 									data={data}
 									image={{
-										// src: 'https://littledeep.com/wp-content/uploads/2019/04/littledeep_illustration_coffee_png1.png', // 마커이미지의 주소입니다
-
 										src: 'https://cdn-icons.flaticon.com/png/512/3172/premium/3172984.png?token=exp=1654744361~hmac=b266b2748dc4c587f5dc402ad95eb993',
 										size: {
 											width: 25,
@@ -269,6 +266,7 @@ const MapBox = () => {
 									selectedCategory={selectedCategory}
 								/>
 							))}
+
 						{selectedCategory === 'ev' &&
 							ev.map(data => (
 								<EventMarkerContainer
@@ -280,7 +278,7 @@ const MapBox = () => {
 										size: {
 											width: 25,
 											height: 30,
-										}, // 마커이미지의 크기입니다
+										}, // 마커이미지의 크기입니다.
 										options: {
 											offset: {
 												x: 27,
@@ -295,31 +293,26 @@ const MapBox = () => {
 
 					{!state.isLoading && <MapMarker position={state.center} />}
 				</Map>
-				{/* 지도 위에 표시될 마커 카테고리 */}
 
+				{/* 지도 위에 표시될 마커 카테고리 */}
 				<div className="category">
 					<ul>
 						<li id="coffeeMenu" onClick={() => setSelectedCategory('coffee')}>
 							카페
 							<IconWrap>
-								<CategoryImg src="https://cdn-icons.flaticon.com/png/512/3172/premium/3172984.png?token=exp=1654744361~hmac=b266b2748dc4c587f5dc402ad95eb993"></CategoryImg>
-								{/* <FontAwesomeIcon size="xl" className="coffeeIcon" icon={faCoffee} /> */}
+								<CategoryImg src="https://cdn-icons.flaticon.com/png/512/3172/premium/3172984.png?token=exp=1654744361~hmac=b266b2748dc4c587f5dc402ad95eb993" />
 							</IconWrap>
 						</li>
 						<li id="evMenu" onClick={() => setSelectedCategory('ev')}>
 							충전소
 							<IconWrap>
-								{/* <FontAwesomeIcon
-									className="chargingStationIcon"
-									size="xl"
-									icon={faChargingStation}
-								/> */}
-								<CategoryImg src="https://cdn-icons-png.flaticon.com/512/4666/4666986.png"></CategoryImg>
+								<CategoryImg src="https://cdn-icons-png.flaticon.com/512/4666/4666986.png" />
 							</IconWrap>
 						</li>
 					</ul>
 				</div>
 			</MapWrapper>
+
 			<BtnWrap>
 				<DistanceBtnWrap>
 					<Btn type="button" onClick={handleReload}>
@@ -345,7 +338,7 @@ const MapBox = () => {
 									key={index}
 									data={data.title}
 									isClicked={filterBatteryQuery.includes(`outputs=${data.id}`)}
-									handleClick={() => handleFilter('outputs', data.id)}
+									handleClick={() => handleBatteryFilter('outputs', data.id)}
 								/>
 							))}
 						</BatteryBtnWrap>
@@ -354,6 +347,7 @@ const MapBox = () => {
 					<div />
 				)}
 			</BtnWrap>
+
 			<ListWrap>
 				{selectedCategory === 'ev' &&
 					cafeNearest.map((data, index) => (
@@ -361,25 +355,47 @@ const MapBox = () => {
 					))}
 				{selectedCategory === 'ev' && (
 					<>
-						<div>보고계신 지역에는 {cafes.length}개의 카페가 있습니다.</div>
-						<ul>
+						<div style={{ fontWeight: '700', marginTop: '3px' }}>
+							보고계신 지역에는 {cafes.length}개의 카페가 있습니다.
+						</div>
+						<ul style={{ marginTop: '5px' }}>
 							{cafes.map((data, index) => (
-								<li key={index}>{data.name}</li>
+								<li key={index}>
+									<a
+										href={`https://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
+										target="_blank"
+										rel="noreferrer"
+										style={{ textDecoration: 'none', color: 'black' }}
+									>
+										{data.name}
+									</a>
+								</li>
 							))}
 						</ul>
 					</>
 				)}
 				{selectedCategory === 'coffee' &&
 					evNearest.map((data, index) => (
-						<List selectedCategory={selectedCategory} key={index} data={data} />
+						<List state={state} selectedCategory={selectedCategory} key={index} data={data} />
 					))}
 				{selectedCategory === 'coffee' && (
 					<>
 						{(filterBatteryQuery, filterTypeQuery)}
-						<div>보고계신 지역에는 {ev.length}개의 충전소가 있습니다.</div>
-						<ul>
+						<div style={{ fontWeight: '700', marginTop: '3px' }}>
+							보고계신 지역에는 {ev.length}개의 충전소가 있습니다.
+						</div>
+						<ul style={{ marginTop: '5px' }}>
 							{ev.map(data => (
-								<li key={data.id}>{data.name}</li>
+								<li key={data.id}>
+									<a
+										href={`https://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
+										target="_blank"
+										rel="noreferrer"
+										style={{ textDecoration: 'none', color: 'black' }}
+									>
+										{data.name}
+									</a>
+								</li>
 							))}
 						</ul>
 					</>
@@ -398,13 +414,13 @@ const BtnWrap = styled.div`
 	width: 350px;
 `;
 const DistanceBtnWrap = styled.div`
-	/* margin-top: 10px; */
+	margin-top: 5px;
 `;
 const BatteryBtnWrap = styled.div`
-	/* margin-top: 10px; */
+	margin-top: 5px;
 `;
 const TypeBtnWrap = styled.div`
-	/* margin-top: 10px; */
+	margin-top: 5px;
 `;
 
 const Btn = styled.button`
@@ -418,7 +434,7 @@ const Btn = styled.button`
 const SearchWrap = styled.div``;
 const SearchInput = styled.input`
 	width: 320px;
-	height: 50px;
+	height: 40px;
 	padding: 0px;
 	outline: none;
 	border: none;
@@ -428,7 +444,7 @@ const SearchBtn = styled.button`
 	background-color: #14c9f2;
 	color: white;
 	border: none;
-	height: 50px;
+	height: 40px;
 	width: 30px;
 	padding: 0px;
 `;
@@ -447,12 +463,11 @@ const ListWrap = styled.ul`
 	padding: 0;
 	overflow-y: scroll;
 	max-height: 100px;
+	margin-top: 7px;
+	width: 350px;
 `;
 
-const IconWrap = styled.span`
-	/* margin-top: 5px;
-	margin-bottom: 10px; */
-`;
+const IconWrap = styled.span``;
 
 const CategoryImg = styled.img`
 	width: 30px;

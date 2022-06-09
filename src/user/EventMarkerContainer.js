@@ -77,6 +77,13 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 									<MetaWrap>
 										<MetaTitle>
 											주소 : <MetaContent>{data.land_lot_number_address}</MetaContent>
+											<Directions
+												href={`https://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
+												target="_blank"
+												rel="noreferrer"
+											>
+												길찾기
+											</Directions>
 										</MetaTitle>
 									</MetaWrap>
 								</div>
