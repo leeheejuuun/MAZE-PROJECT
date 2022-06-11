@@ -45,7 +45,18 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 										</MetaTitle>
 										<MetaTitle>
 											충전기 대수 :{' '}
-											<MetaContent>{data.chargers.count_of_status.total_charger} 대</MetaContent>
+											<MetaContent>
+												{data.chargers.count_of_status.total_charger} 대
+												{data.chargers.quick_and_slow.of_total_charger.quick !== 0 &&
+													data.chargers.quick_and_slow.of_total_charger.slow !== 0 && (
+														<>
+															(급속 : {data.chargers.quick_and_slow.of_total_charger.quick}대 , 완속
+															: {data.chargers.quick_and_slow.of_total_charger.slow}대)
+														</>
+													)}
+												{/* (급속 : {data.chargers.quick_and_slow.of_total_charger.quick}대 , 완속 :{' '}
+												{data.chargers.quick_and_slow.of_total_charger.slow}대) */}
+											</MetaContent>
 										</MetaTitle>
 									</MetaWrap>
 									<ChargerWrap>
@@ -58,6 +69,7 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 														charging={data.charging_status === '충전 중'}
 														stop={data.charging_status === '운영중지'}
 														inspection={data.charging_status === '점검 중'}
+														error={data.charging_status === '통신이상'}
 													>
 														{data.charging_status}
 													</StatusWrap>
@@ -124,7 +136,9 @@ const StatusWrap = styled.span`
 	font-size: 13px;
 	font-weight: 400;
 	color: ${props =>
-		props.unidentified || props.stop || props.inspection || props.charging ? 'red' : 'blue'};
+		props.unidentified || props.stop || props.inspection || props.charging || props.error
+			? 'red'
+			: 'blue'};
 `;
 
 const MetaList = styled.li``;

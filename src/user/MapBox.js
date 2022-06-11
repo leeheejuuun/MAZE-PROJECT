@@ -128,9 +128,7 @@ const MapBox = () => {
 			setLevel(5);
 		} else if (e.target.value === '500m') {
 			setLevel(6);
-		} else if (e.target.value === '1km') {
-			setLevel(7);
-		}
+		} else setLevel(7);
 	};
 
 	// 배터리용량 필터링
@@ -212,6 +210,14 @@ const MapBox = () => {
 			});
 	}, [state]);
 
+	// const zoom = () => {
+	// 	if (level >= 8) {
+	// 		return false;
+	// 	}
+	// };
+
+	console.log(level);
+
 	return (
 		<MapWrap>
 			<SearchWrap>
@@ -231,7 +237,7 @@ const MapBox = () => {
 					style={{
 						// 지도의 크기
 						width: '350px',
-						height: '370px',
+						height: '400px',
 					}}
 					level={level} // 지도의 확대 레벨
 					onTileLoaded={map => {
@@ -242,8 +248,9 @@ const MapBox = () => {
 							NE_longitude: map.getBounds().getNorthEast().La.toString(),
 						});
 					}}
+					maxLevel={8}
 				>
-					<MarkerClusterer averageCenter={false} minLevel={7}>
+					<MarkerClusterer minClusterSize={3} averageCenter={false} minLevel={8}>
 						{selectedCategory === 'coffee' &&
 							cafes.map(data => (
 								<EventMarkerContainer
@@ -253,8 +260,8 @@ const MapBox = () => {
 									image={{
 										src: 'https://cdn-icons.flaticon.com/png/512/3172/premium/3172984.png?token=exp=1654744361~hmac=b266b2748dc4c587f5dc402ad95eb993',
 										size: {
-											width: 25,
-											height: 30,
+											width: 15,
+											height: 20,
 										}, // 마커이미지의 크기입니다
 										options: {
 											offset: {
@@ -276,8 +283,8 @@ const MapBox = () => {
 									image={{
 										src: 'https://cdn-icons-png.flaticon.com/512/4666/4666986.png',
 										size: {
-											width: 25,
-											height: 30,
+											width: 15,
+											height: 20,
 										}, // 마커이미지의 크기입니다.
 										options: {
 											offset: {
