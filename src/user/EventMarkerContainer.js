@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapMarker } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 
@@ -10,7 +10,14 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 	};
 
 	return (
-		<MapMarker position={position} onClick={handleOpen} image={image}>
+		<MapMarker
+			position={position}
+			onClick={handleOpen}
+			image={image}
+			infoWindowOptions={{
+				zIndex: 9999,
+			}}
+		>
 			{isVisible && (
 				<div>
 					{selectedCategory === 'ev' ? (
@@ -46,16 +53,14 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 										<MetaTitle>
 											충전기 대수 :{' '}
 											<MetaContent>
-												{data.chargers.count_of_status.total_charger} 대
-												{data.chargers.quick_and_slow.of_total_charger.quick !== 0 &&
-													data.chargers.quick_and_slow.of_total_charger.slow !== 0 && (
-														<>
-															(급속 : {data.chargers.quick_and_slow.of_total_charger.quick}대 , 완속
-															: {data.chargers.quick_and_slow.of_total_charger.slow}대)
-														</>
-													)}
-												{/* (급속 : {data.chargers.quick_and_slow.of_total_charger.quick}대 , 완속 :{' '}
-												{data.chargers.quick_and_slow.of_total_charger.slow}대) */}
+												{data.chargers.count_of_status.total_charger} 대{' '}
+												{(data.chargers.quick_and_slow.of_total_charger.quick !== 0 ||
+													data.chargers.quick_and_slow.of_total_charger.slow !== 0) && (
+													<>
+														(급속 : {data.chargers.quick_and_slow.of_total_charger.quick}대 , 완속 :{' '}
+														{data.chargers.quick_and_slow.of_total_charger.slow}대)
+													</>
+												)}
 											</MetaContent>
 										</MetaTitle>
 									</MetaWrap>
@@ -111,6 +116,7 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 
 const MetaWrap = styled.div`
 	margin-top: 10px;
+	z-index: 9999;
 	/* margin-bottom: 10px; */
 `;
 const ChargerWrap = styled.div`

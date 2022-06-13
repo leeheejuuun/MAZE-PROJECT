@@ -206,17 +206,24 @@ const MapBox = () => {
 			.then(res => res.json())
 			.then(data => {
 				setEvNearest([data.results]);
-				// console.log(data);
 			});
 	}, [state]);
 
-	// const zoom = () => {
-	// 	if (level >= 8) {
-	// 		return false;
-	// 	}
-	// };
+	const [metaData, setMetaData] = useState([]);
 
-	console.log(level);
+	useEffect(() => {
+		fetch('http://54.180.104.23:8000/commons')
+			.then(response => response.json())
+			.then(data => {
+				setMetaData(data.results.charger.filtering_include_search);
+			});
+	}, []);
+
+	console.log(metaData);
+	// console.log(
+	// 	metaData.charger.filtering_include_search && metaData.charger.filtering_include_search,
+	// );
+	// console.log(metaData.charger.outputs.output);
 
 	return (
 		<MapWrap>
@@ -237,7 +244,7 @@ const MapBox = () => {
 					style={{
 						// 지도의 크기
 						width: '350px',
-						height: '400px',
+						height: '370px',
 					}}
 					level={level} // 지도의 확대 레벨
 					onTileLoaded={map => {
@@ -288,8 +295,8 @@ const MapBox = () => {
 										}, // 마커이미지의 크기입니다.
 										options: {
 											offset: {
-												x: 27,
-												y: 69,
+												x: 6,
+												y: 73,
 											}, // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 										},
 									}}
@@ -330,12 +337,12 @@ const MapBox = () => {
 				{selectedCategory === 'ev' ? (
 					<>
 						<TypeBtnWrap>
-							{meta.type.map((data, index) => (
+							{metaData.map((data, index) => (
 								<TypebatteryButton
 									key={index}
 									data={data.title}
-									isClicked={filterTypeQuery.includes(`${data.num}`)}
-									handleClick={() => handleTypeFilter(data.num)}
+									isClicked={filterTypeQuery.includes(`${data.nums}`)}
+									handleClick={() => handleTypeFilter(data.nums)}
 								/>
 							))}
 						</TypeBtnWrap>
@@ -362,12 +369,12 @@ const MapBox = () => {
 					))}
 				{selectedCategory === 'ev' && (
 					<>
-						<div style={{ fontWeight: '700', marginTop: '3px' }}>
+						<div style={{ fontWeight: '700', marginTop: '3px', marginBottom: '5px' }}>
 							보고계신 지역에는 {cafes.length}개의 카페가 있습니다.
 						</div>
-						<ul style={{ marginTop: '5px' }}>
+						<LookingListWrap>
 							{cafes.map((data, index) => (
-								<li key={index}>
+								<LookingList key={index}>
 									<a
 										href={`https://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
 										target="_blank"
@@ -376,24 +383,26 @@ const MapBox = () => {
 									>
 										{data.name}
 									</a>
-								</li>
+								</LookingList>
 							))}
-						</ul>
+						</LookingListWrap>
 					</>
 				)}
+
 				{selectedCategory === 'coffee' &&
 					evNearest.map((data, index) => (
 						<List state={state} selectedCategory={selectedCategory} key={index} data={data} />
 					))}
 				{selectedCategory === 'coffee' && (
 					<>
-						{(filterBatteryQuery, filterTypeQuery)}
-						<div style={{ fontWeight: '700', marginTop: '3px' }}>
+						{/* {(filterBatteryQuery, filterTypeQuery)} */}
+						<div style={{ fontWeight: '700', marginTop: '3px', marginBottom: '5px' }}>
 							보고계신 지역에는 {ev.length}개의 충전소가 있습니다.
 						</div>
-						<ul style={{ marginTop: '5px' }}>
+
+						<LookingListWrap>
 							{ev.map(data => (
-								<li key={data.id}>
+								<LookingList key={data.id}>
 									<a
 										href={`https://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
 										target="_blank"
@@ -402,9 +411,9 @@ const MapBox = () => {
 									>
 										{data.name}
 									</a>
-								</li>
+								</LookingList>
 							))}
-						</ul>
+						</LookingListWrap>
 					</>
 				)}
 			</ListWrap>
@@ -472,6 +481,24 @@ const ListWrap = styled.ul`
 	max-height: 100px;
 	margin-top: 7px;
 	width: 350px;
+`;
+
+const LookingListWrap = styled.ul`
+	magin-top: 5px;
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+`;
+const LookingList = styled.li`
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	border-radius: 10px;
+	height: 35px;
+	width: 270px;
+	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	list-style: none;
 `;
 
 const IconWrap = styled.span``;
