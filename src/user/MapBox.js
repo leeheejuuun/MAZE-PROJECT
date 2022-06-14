@@ -132,11 +132,11 @@ const MapBox = () => {
 	};
 
 	// 배터리용량 필터링
-	const handleBatteryFilter = (option, id) => {
-		if (filterBatteryQuery.includes(`${option}=${id}`)) {
-			setFilterBatteryQuery(filterBatteryQuery.filter(value => value !== `${option}=${id}`));
+	const handleBatteryFilter = (option, query) => {
+		if (filterBatteryQuery.includes(`${option}=${query}`)) {
+			setFilterBatteryQuery(filterBatteryQuery.filter(value => value !== `${option}=${query}`));
 		} else {
-			setFilterBatteryQuery(prev => [...prev, `${option}=${id}`]);
+			setFilterBatteryQuery(prev => [...prev, `${option}=${query}`]);
 		}
 	};
 
@@ -219,8 +219,11 @@ const MapBox = () => {
 			.then(response => response.json())
 			.then(data => {
 				setMetaOutputs(data.results.charger.outputs.output);
+				console.log(data);
 			});
 	}, []);
+
+	console.log(filterBatteryQuery);
 
 	// console.log(metaData);
 	// console.log(
@@ -268,7 +271,7 @@ const MapBox = () => {
 									position={{ lat: data.latitude, lng: data.longitude }}
 									data={data}
 									image={{
-										src: 'https://cdn-icons.flaticon.com/png/512/3172/premium/3172984.png?token=exp=1654744361~hmac=b266b2748dc4c587f5dc402ad95eb993',
+										// src: 'https://cdn-icons.flaticon.com/png/512/3172/premium/3172984.png?token=exp=1654744361~hmac=b266b2748dc4c587f5dc402ad95eb993',
 										size: {
 											width: 15,
 											height: 20,
@@ -354,8 +357,8 @@ const MapBox = () => {
 								<TypebatteryButton
 									key={index}
 									data={data.capacity}
-									isClicked={filterBatteryQuery.includes(`outputs=${data.capacity}`)}
-									handleClick={() => handleBatteryFilter('outputs', data.capacity)}
+									isClicked={filterBatteryQuery.includes(`outputs=${data.query}`)}
+									handleClick={() => handleBatteryFilter('outputs', data.query)}
 								/>
 							))}
 						</BatteryBtnWrap>
