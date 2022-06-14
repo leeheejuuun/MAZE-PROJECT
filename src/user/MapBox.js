@@ -169,9 +169,7 @@ const MapBox = () => {
 		)
 			.then(res => res.json())
 			.then(data => {
-				// setCafes(prev => [...prev, ...data.results]);
 				setCafes(data.results);
-				// console.log('cafes', data);
 			});
 		fetch(
 			`http://54.180.104.23:8000/evs?${filterBatteryQuery.join('&')}&${new URLSearchParams({
@@ -182,7 +180,6 @@ const MapBox = () => {
 			.then(res => res.json())
 			.then(data => {
 				setEv(data.results);
-				console.log('ev', data);
 			});
 	}, [area, filterTypeQuery, filterBatteryQuery, selectedCategory]);
 
@@ -223,9 +220,6 @@ const MapBox = () => {
 			.then(data => {
 				setMetaOutputs(data.results.charger.outputs.output);
 			});
-
-		console.log(metaOutputs);
-		console.log(metaTypes);
 	}, []);
 
 	// console.log(metaData);

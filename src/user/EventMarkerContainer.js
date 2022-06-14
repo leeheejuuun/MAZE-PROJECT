@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MapMarker } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 
