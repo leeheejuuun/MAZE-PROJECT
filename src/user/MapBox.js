@@ -85,6 +85,9 @@ const MapBox = () => {
 		}
 	}, []);
 
+	console.log(state);
+	console.log(area);
+
 	useEffect(() => {
 		const coffeeMenu = document.getElementById('coffeeMenu');
 		const evMenu = document.getElementById('evMenu');
