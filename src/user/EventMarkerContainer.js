@@ -53,7 +53,7 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 										<MetaTitle>
 											충전기 대수 :{' '}
 											<MetaContent>
-												{data.chargers.count_of_status.total_charger} 대{' '}
+												{data.chargers.chargers_in_station.length} 대{' '}
 												{(data.chargers.quick_and_slow.of_total_charger.quick !== 0 ||
 													data.chargers.quick_and_slow.of_total_charger.slow !== 0) && (
 													<>

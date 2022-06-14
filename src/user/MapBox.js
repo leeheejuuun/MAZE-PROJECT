@@ -7,26 +7,26 @@ import './MapBox.scss';
 import styled from 'styled-components';
 import DistanceButton from './Components/Buttons/DistanceButton';
 
-const meta = {
-	type: [
-		{ id: 1, title: 'DC차데모', num: '1,3,5,6' },
-		{ id: 2, title: 'AC완속', num: '2' },
-		{ id: 3, title: 'AC3상', num: '3,6,7' },
-		{ id: 4, title: 'DC콤보', num: '4,5,6' },
-	],
-	battery: [
-		{ id: 3, title: '3kw' },
-		{ id: 7, title: '7kw' },
-		{ id: 14, title: '14kw' },
-		{ id: 40, title: '40kw' },
-		{ id: 50, title: '50kw' },
-		{ id: 100, title: '100kw' },
-		{ id: 175, title: '175kw' },
-		{ id: 200, title: '200kw' },
-		{ id: 260, title: '260kw' },
-		{ id: 350, title: '350kw' },
-	],
-};
+// const meta = {
+// 	type: [
+// 		{ id: 1, title: 'DC차데모', num: '1,3,5,6' },
+// 		{ id: 2, title: 'AC완속', num: '2' },
+// 		{ id: 3, title: 'AC3상', num: '3,6,7' },
+// 		{ id: 4, title: 'DC콤보', num: '4,5,6' },
+// 	],
+// 	battery: [
+// 		{ id: 3, title: '3kw' },
+// 		{ id: 7, title: '7kw' },
+// 		{ id: 14, title: '14kw' },
+// 		{ id: 40, title: '40kw' },
+// 		{ id: 50, title: '50kw' },
+// 		{ id: 100, title: '100kw' },
+// 		{ id: 175, title: '175kw' },
+// 		{ id: 200, title: '200kw' },
+// 		{ id: 260, title: '260kw' },
+// 		{ id: 350, title: '350kw' },
+// 	],
+// };
 
 const MapBox = () => {
 	const { kakao } = window;
@@ -171,7 +171,7 @@ const MapBox = () => {
 			.then(data => {
 				// setCafes(prev => [...prev, ...data.results]);
 				setCafes(data.results);
-				console.log('cafes', data);
+				// console.log('cafes', data);
 			});
 		fetch(
 			`http://54.180.104.23:8000/evs?${filterBatteryQuery.join('&')}&${new URLSearchParams({
@@ -209,17 +209,26 @@ const MapBox = () => {
 			});
 	}, [state]);
 
-	const [metaData, setMetaData] = useState([]);
+	const [metaOutputs, setMetaOutputs] = useState([]);
+	const [metaTypes, setMetaTypes] = useState([]);
 
 	useEffect(() => {
 		fetch('http://54.180.104.23:8000/commons')
 			.then(response => response.json())
 			.then(data => {
-				setMetaData(data.results.charger.filtering_include_search);
+				setMetaTypes(data.results.charger.filtering_include_search);
 			});
+		fetch('http://54.180.104.23:8000/commons')
+			.then(response => response.json())
+			.then(data => {
+				setMetaOutputs(data.results.charger.outputs.output);
+			});
+
+		console.log(metaOutputs);
+		console.log(metaTypes);
 	}, []);
 
-	console.log(metaData);
+	// console.log(metaData);
 	// console.log(
 	// 	metaData.charger.filtering_include_search && metaData.charger.filtering_include_search,
 	// );
@@ -337,7 +346,7 @@ const MapBox = () => {
 				{selectedCategory === 'ev' ? (
 					<>
 						<TypeBtnWrap>
-							{metaData.map((data, index) => (
+							{metaTypes.map((data, index) => (
 								<TypebatteryButton
 									key={index}
 									data={data.title}
@@ -347,12 +356,12 @@ const MapBox = () => {
 							))}
 						</TypeBtnWrap>
 						<BatteryBtnWrap>
-							{meta.battery.map((data, index) => (
+							{metaOutputs.map((data, index) => (
 								<TypebatteryButton
 									key={index}
-									data={data.title}
-									isClicked={filterBatteryQuery.includes(`outputs=${data.id}`)}
-									handleClick={() => handleBatteryFilter('outputs', data.id)}
+									data={data.capacity}
+									isClicked={filterBatteryQuery.includes(`outputs=${data.capacity}`)}
+									handleClick={() => handleBatteryFilter('outputs', data.capacity)}
 								/>
 							))}
 						</BatteryBtnWrap>
