@@ -219,11 +219,11 @@ const MapBox = () => {
 			.then(response => response.json())
 			.then(data => {
 				setMetaOutputs(data.results.charger.outputs.output);
-				console.log(data);
+				// console.log(data);
 			});
 	}, []);
 
-	console.log(filterBatteryQuery);
+	// console.log(filterBatteryQuery);
 
 	// console.log(metaData);
 	// console.log(
