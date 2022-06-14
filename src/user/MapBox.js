@@ -320,7 +320,7 @@ const MapBox = () => {
 						<li id="coffeeMenu" onClick={() => setSelectedCategory('coffee')}>
 							카페
 							<IconWrap>
-								<CategoryImg src="https://cdn-icons.flaticon.com/png/512/3172/premium/3172984.png?token=exp=1654744361~hmac=b266b2748dc4c587f5dc402ad95eb993" />
+								{/* <CategoryImg src="https://cdn-icons.flaticon.com/png/512/3172/premium/3172984.png?token=exp=1654744361~hmac=b266b2748dc4c587f5dc402ad95eb993" /> */}
 							</IconWrap>
 						</li>
 						<li id="evMenu" onClick={() => setSelectedCategory('ev')}>
