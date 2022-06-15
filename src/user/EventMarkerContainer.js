@@ -8,8 +8,7 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 	const handleOpen = () => {
 		setIsVisible(prev => !prev);
 	};
-
-	console.log(data.chargers[0].chargers_in_station);
+	console.log(image);
 
 	return (
 		<MapMarker

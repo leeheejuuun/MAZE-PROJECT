@@ -6,6 +6,7 @@ import List from './List';
 import './MapBox.scss';
 import styled from 'styled-components';
 import DistanceButton from './Components/Buttons/DistanceButton';
+import cafeImg from '../images/premium-icon-cafe-3172984.png';
 
 const MapBox = () => {
 	const { kakao } = window;
@@ -289,13 +290,13 @@ const MapBox = () => {
 				>
 					<MarkerClusterer minClusterSize={3} averageCenter={false} minLevel={8}>
 						{selectedCategory === 'coffee' &&
-							cafes.map(data => (
+							cafes.map((data, index) => (
 								<EventMarkerContainer
-									key={data.name}
+									key={index}
 									position={{ lat: data.latitude, lng: data.longitude }}
 									data={data}
 									image={{
-										// src: 'https://cdn-icons.flaticon.com/png/512/3172/premium/3172984.png?token=exp=1654744361~hmac=b266b2748dc4c587f5dc402ad95eb993',
+										src: '../images/premium-icon-cafe-3172984.png',
 										size: {
 											width: 15,
 											height: 20,
@@ -344,7 +345,7 @@ const MapBox = () => {
 						<li id="coffeeMenu" onClick={() => setSelectedCategory('coffee')}>
 							카페
 							<IconWrap>
-								{/* <CategoryImg src="https://cdn-icons.flaticon.com/png/512/3172/premium/3172984.png?token=exp=1654744361~hmac=b266b2748dc4c587f5dc402ad95eb993" /> */}
+								<CategoryImg src={cafeImg} />
 							</IconWrap>
 						</li>
 						<li id="evMenu" onClick={() => setSelectedCategory('ev')}>
@@ -392,14 +393,14 @@ const MapBox = () => {
 				)}
 			</BtnWrap>
 
-			<ListWrap>
+			<>
 				{selectedCategory === 'ev' &&
 					cafeNearest.map((data, index) => (
 						<List selectedCategory={selectedCategory} key={index} data={data} />
 					))}
 				{selectedCategory === 'ev' && (
 					<>
-						<div style={{ fontWeight: '700', marginTop: '3px', marginBottom: '5px' }}>
+						<div style={{ fontWeight: '700', marginTop: '10px' }}>
 							보고계신 지역에는 {cafes.length}개의 카페가 있습니다.
 						</div>
 						<LookingListWrap>
@@ -426,7 +427,7 @@ const MapBox = () => {
 				{selectedCategory === 'coffee' && (
 					<>
 						{/* {(filterBatteryQuery, filterTypeQuery)} */}
-						<div style={{ fontWeight: '700', marginTop: '3px', marginBottom: '5px' }}>
+						<div style={{ fontWeight: '700', marginTop: '10px', marginBottom: '5px' }}>
 							보고계신 지역에는 {ev.length}개의 충전소가 있습니다.
 						</div>
 
@@ -446,7 +447,7 @@ const MapBox = () => {
 						</LookingListWrap>
 					</>
 				)}
-			</ListWrap>
+			</>
 		</MapWrap>
 	);
 };
@@ -499,25 +500,27 @@ const MapWrapper = styled.div`
 	position: relative;
 `;
 
-const ListWrap = styled.ul`
-	border: 1px solid rgba(0, 0, 0, 0.4);
-	border-color: #14c9f2;
-	border-radius: 10px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 0;
-	overflow-y: scroll;
-	max-height: 100px;
-	margin-top: 7px;
-	width: 350px;
-`;
+// const ListWrap = styled.ul`
+// 	border: 1px solid rgba(0, 0, 0, 0.4);
+// 	border-color: #14c9f2;
+// 	border-radius: 10px;
+// 	display: flex;
+// 	flex-direction: column;
+// 	align-items: center;
+// 	padding: 0;
+// 	overflow-y: scroll;
+// 	max-height: 100px;
+// 	margin-top: 7px;
+// 	width: 350px;
+// `;
 
 const LookingListWrap = styled.ul`
 	magin-top: 5px;
 	display: flex;
 	flex-direction: column;
 	padding: 0;
+	max-height: 300px;
+	overflow-y: scroll;
 `;
 const LookingList = styled.li`
 	border: 1px solid rgba(0, 0, 0, 0.2);
@@ -529,6 +532,8 @@ const LookingList = styled.li`
 	align-items: center;
 	justify-content: center;
 	list-style: none;
+
+	margin-top: 7px;
 `;
 
 const IconWrap = styled.span``;
