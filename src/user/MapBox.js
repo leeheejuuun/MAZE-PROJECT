@@ -34,6 +34,8 @@ const MapBox = () => {
 	const [state, setState] = useState({
 		// 지도의 초기 위치
 		center: { lat: null, lng: null },
+		// { lat: 37.476086, lng: 127.123543 }
+
 		// 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
 		isPanto: true,
 		errMsg: null,
@@ -53,7 +55,7 @@ const MapBox = () => {
 	const [cafeNearest, setCafeNearest] = useState([]);
 	const [searchAddress, setSearchAddress] = useState();
 
-	useEffect(() => {
+	const handleReload = () => {
 		if (navigator.geolocation) {
 			// GeoLocation을 이용해서 접속 위치를 얻어옵니다
 			navigator.geolocation.getCurrentPosition(
@@ -83,7 +85,41 @@ const MapBox = () => {
 				isLoading: false,
 			}));
 		}
-	}, []);
+	};
+
+	// const [test, setTest] = useState(false);
+
+	// useEffect(() => {
+	// 	if (navigator.geolocation) {
+	// 		// GeoLocation을 이용해서 접속 위치를 얻어옵니다
+	// 		navigator.geolocation.getCurrentPosition(
+	// 			position => {
+	// 				setState(prev => ({
+	// 					...prev,
+	// 					center: {
+	// 						lat: position.coords.latitude, // 위도
+	// 						lng: position.coords.longitude, // 경도
+	// 					},
+	// 					isLoading: false,
+	// 				}));
+	// 			},
+	// 			err => {
+	// 				setState(prev => ({
+	// 					...prev,
+	// 					errMsg: err.message,
+	// 					isLoading: false,
+	// 				}));
+	// 			},
+	// 		);
+	// 	} else {
+	// 		// HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+	// 		setState(prev => ({
+	// 			...prev,
+	// 			errMsg: 'geolocation을 사용할수 없어요..',
+	// 			isLoading: false,
+	// 		}));
+	// 	}
+	// }, []);
 
 	console.log(state);
 	console.log(area);
@@ -121,10 +157,13 @@ const MapBox = () => {
 	};
 
 	// 현위치로 새로고침
-	const handleReload = () => {
-		window.location.reload();
-	};
+	// const handleReload = () => {
+	// 	window.location.reload();
+	// };
 
+	// const handleTest = () => {
+	// 	setTest(true);
+	// };
 	// 버튼 클릭시 반경 조정
 	const handleClickDistance = e => {
 		if (e.target.value === '250m') {
