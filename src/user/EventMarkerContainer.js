@@ -8,7 +8,6 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 	const handleOpen = () => {
 		setIsVisible(prev => !prev);
 	};
-	console.log(image);
 
 	return (
 		<MapMarker
@@ -70,11 +69,12 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 										</MetaTitle>
 									</MetaWrap>
 									<ChargerWrap>
-										{data.chargers[0].chargers_in_station.map(data => (
+										{data.chargers[0].chargers_in_station.map((data, index) => (
 											<MetaList>
 												<MetaListTitle key={data.id}>
 													{data.charger_type} :{' '}
 													<StatusWrap
+														key={index}
 														unidentified={data.charging_status === '상태미확인'}
 														charging={data.charging_status === '충전 중'}
 														stop={data.charging_status === '운영중지'}
