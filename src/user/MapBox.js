@@ -177,9 +177,9 @@ const MapBox = () => {
 		if (area === null) {
 			return;
 		}
-		if (state.center.lat === null) {
-			return;
-		}
+		// } else if (state.center.lat === null) {
+		// 	return;
+		// }
 
 		const types = [...new Set([...filterTypeQuery.join(',').split(',')])].sort().join('').slice();
 

@@ -70,7 +70,7 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 									</MetaWrap>
 									<ChargerWrap>
 										{data.chargers[0].chargers_in_station.map((data, index) => (
-											<MetaList>
+											<MetaList key={index}>
 												<MetaListTitle key={data.id}>
 													{data.charger_type} :{' '}
 													<StatusWrap

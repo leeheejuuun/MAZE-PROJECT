@@ -3,13 +3,13 @@ import styled from 'styled-components';
 
 export default function List({ data, selectedCategory }) {
 	return (
-		<>
+		<div>
 			{selectedCategory === 'ev' ? (
 				<Lists>현위치에서 가장 가까운 카페는 약 {data.nearest_cafe.km.toFixed(1)}km</Lists>
 			) : (
 				<Lists>현위치에서 가장 가까운 충전소는 약 {data.nearest_station.km.toFixed(1)}km</Lists>
 			)}
-		</>
+		</div>
 	);
 }
 
