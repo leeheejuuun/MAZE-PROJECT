@@ -6,7 +6,8 @@ import List from './List';
 import './MapBox.scss';
 import styled from 'styled-components';
 import DistanceButton from './Components/Buttons/DistanceButton';
-import cafeImg from '../images/premium-icon-cafe-3172984.png';
+// import cafeImg from '../../public/images/premium-icon-cafe-3172984.png';
+// import cafeIcon from '/public/images/premium-icon-cafe-3172984.png';
 
 const MapBox = () => {
 	const { kakao } = window;
@@ -34,6 +35,9 @@ const MapBox = () => {
 	const [evNearest, setEvNearest] = useState([]);
 	const [cafeNearest, setCafeNearest] = useState([]);
 	const [searchAddress, setSearchAddress] = useState();
+	const [metaOutputs, setMetaOutputs] = useState([]);
+	const [metaTypes, setMetaTypes] = useState([]);
+	const [available, setAvailable] = useState(false);
 
 	const handleReload = () => {
 		if (navigator.geolocation) {
@@ -200,13 +204,15 @@ const MapBox = () => {
 			`http://54.180.104.23:8000/evs?${filterBatteryQuery.join('&')}&${new URLSearchParams({
 				...area,
 				charger_type_ids: types,
+				usable: available ? 'YES' : 'NO',
 			})}`,
 		)
 			.then(res => res.json())
 			.then(data => {
 				setEv(data.results);
+				console.log(data);
 			});
-	}, [area, filterTypeQuery, filterBatteryQuery, selectedCategory]);
+	}, [area, filterTypeQuery, filterBatteryQuery, selectedCategory, available]);
 
 	// 가까운 카페 및 충전소 받아오는 fetch
 
@@ -231,9 +237,6 @@ const MapBox = () => {
 			});
 	}, [state]);
 
-	const [metaOutputs, setMetaOutputs] = useState([]);
-	const [metaTypes, setMetaTypes] = useState([]);
-
 	useEffect(() => {
 		fetch('http://54.180.104.23:8000/commons')
 			.then(response => response.json())
@@ -244,9 +247,17 @@ const MapBox = () => {
 			.then(response => response.json())
 			.then(data => {
 				setMetaOutputs(data.results.charger.outputs.output);
-				// console.log(data);
 			});
 	}, []);
+
+	// useEffect(() => {
+	// 	fetch(`http://54.180.104.23:8000/commons?query=${available.query}`)
+	// 		.then(response => response.json())
+	// 		.then(data => {
+	// 			console.log(data.results.charger.usable, 'data.results.charger.usable');
+	// 			setAvailable(data.results.charger.usable);
+	// 		});
+	// }, []);
 
 	// console.log(filterBatteryQuery);
 
@@ -296,7 +307,7 @@ const MapBox = () => {
 									position={{ lat: data.latitude, lng: data.longitude }}
 									data={data}
 									image={{
-										src: '../images/premium-icon-cafe-3172984.png',
+										src: `${process.env.PUBLIC_URL}/images/premium-icon-cafe-3172984.png`,
 										size: {
 											width: 15,
 											height: 20,
@@ -319,7 +330,11 @@ const MapBox = () => {
 									position={{ lat: data.latitude, lng: data.longitude }}
 									data={data}
 									image={{
-										src: 'https://cdn-icons-png.flaticon.com/512/4666/4666986.png',
+										src: `${
+											data.chargers[0].usable_by_filtering === 'YES'
+												? `${process.env.PUBLIC_URL}/images/premium-icon-charging-station-4426682.png`
+												: `${process.env.PUBLIC_URL}/images/premium-icon-charging-station-4426752.png`
+										}`,
 										size: {
 											width: 15,
 											height: 20,
@@ -345,13 +360,17 @@ const MapBox = () => {
 						<li id="coffeeMenu" onClick={() => setSelectedCategory('coffee')}>
 							카페
 							<IconWrap>
-								<CategoryImg src={cafeImg} />
+								<CategoryImg
+									src={`${process.env.PUBLIC_URL}/images/premium-icon-cafe-3172984.png`}
+								/>
 							</IconWrap>
 						</li>
 						<li id="evMenu" onClick={() => setSelectedCategory('ev')}>
 							충전소
 							<IconWrap>
-								<CategoryImg src="https://cdn-icons-png.flaticon.com/512/4666/4666986.png" />
+								<CategoryImg
+									src={`${process.env.PUBLIC_URL}/images/premium-icon-charging-station-4426682.png`}
+								/>
 							</IconWrap>
 						</li>
 					</ul>
@@ -364,6 +383,11 @@ const MapBox = () => {
 						현위치
 					</Btn>
 					<DistanceButton handleClickDistance={handleClickDistance} />
+					<TypebatteryButton
+						data={available ? '전체 충전소 보기' : '사용가능한 충전기 보기'}
+						isClicked={available}
+						handleClick={() => setAvailable(prev => !prev)}
+					/>
 				</DistanceBtnWrap>
 				{selectedCategory === 'ev' ? (
 					<>
