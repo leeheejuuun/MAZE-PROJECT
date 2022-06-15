@@ -7,33 +7,12 @@ import './MapBox.scss';
 import styled from 'styled-components';
 import DistanceButton from './Components/Buttons/DistanceButton';
 
-// const meta = {
-// 	type: [
-// 		{ id: 1, title: 'DC차데모', num: '1,3,5,6' },
-// 		{ id: 2, title: 'AC완속', num: '2' },
-// 		{ id: 3, title: 'AC3상', num: '3,6,7' },
-// 		{ id: 4, title: 'DC콤보', num: '4,5,6' },
-// 	],
-// 	battery: [
-// 		{ id: 3, title: '3kw' },
-// 		{ id: 7, title: '7kw' },
-// 		{ id: 14, title: '14kw' },
-// 		{ id: 40, title: '40kw' },
-// 		{ id: 50, title: '50kw' },
-// 		{ id: 100, title: '100kw' },
-// 		{ id: 175, title: '175kw' },
-// 		{ id: 200, title: '200kw' },
-// 		{ id: 260, title: '260kw' },
-// 		{ id: 350, title: '350kw' },
-// 	],
-// };
-
 const MapBox = () => {
 	const { kakao } = window;
 
 	const [state, setState] = useState({
 		// 지도의 초기 위치
-		center: { lat: null, lng: null },
+		center: { lat: 37.5666805, lng: 126.9784147 },
 		// { lat: 37.476086, lng: 127.123543 }
 
 		// 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
