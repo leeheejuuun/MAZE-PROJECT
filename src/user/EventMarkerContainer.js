@@ -9,6 +9,8 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 		setIsVisible(prev => !prev);
 	};
 
+	console.log(data.chargers[0].chargers_in_station);
+
 	return (
 		<MapMarker
 			position={position}
@@ -53,21 +55,25 @@ export default function EventMarkerContainer({ data, position, image, selectedCa
 										<MetaTitle>
 											충전기 대수 :{' '}
 											<MetaContent>
-												{data.chargers.chargers_in_station.length} 대{' '}
-												{(data.chargers.quick_and_slow.of_total_charger.quick !== 0 ||
-													data.chargers.quick_and_slow.of_total_charger.slow !== 0) && (
-													<>
-														(급속 : {data.chargers.quick_and_slow.of_total_charger.quick}대 , 완속 :{' '}
-														{data.chargers.quick_and_slow.of_total_charger.slow}대)
-													</>
-												)}
+												{data.chargers.map(hi => (
+													<>{hi.chargers_in_station.length} 대 </>
+												))}
+
+												{(data.chargers[0].quick_and_slow.of_total_charger.quick !== 0 ||
+													data.chargers[0].quick_and_slow.of_total_charger.slow !== 0) &&
+													data.chargers.map(zz => (
+														<>
+															(급속 : {zz.quick_and_slow.of_total_charger.quick}대 , 완속 :{' '}
+															{zz.quick_and_slow.of_total_charger.slow}대)
+														</>
+													))}
 											</MetaContent>
 										</MetaTitle>
 									</MetaWrap>
 									<ChargerWrap>
-										{data.chargers.chargers_in_station.map((data, index) => (
-											<MetaList key={index}>
-												<MetaListTitle>
+										{data.chargers[0].chargers_in_station.map(data => (
+											<MetaList>
+												<MetaListTitle key={data.id}>
 													{data.charger_type} :{' '}
 													<StatusWrap
 														unidentified={data.charging_status === '상태미확인'}

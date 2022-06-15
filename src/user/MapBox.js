@@ -121,8 +121,8 @@ const MapBox = () => {
 	// 	}
 	// }, []);
 
-	console.log(state);
-	console.log(area);
+	// console.log(state);
+	// console.log(area);
 
 	useEffect(() => {
 		const coffeeMenu = document.getElementById('coffeeMenu');
@@ -195,6 +195,9 @@ const MapBox = () => {
 
 	useEffect(() => {
 		if (area === null) {
+			return;
+		}
+		if (state.center.lat === null) {
 			return;
 		}
 
