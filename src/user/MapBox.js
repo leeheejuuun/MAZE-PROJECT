@@ -133,9 +133,9 @@ const MapBox = () => {
 	};
 
 	// 현위치로 새로고침
-	const handleReload = () => {
-		window.location.reload();
-	};
+	// const handleReload = () => {
+	// 	window.location.reload();
+	// };
 
 	// const handleTest = () => {
 	// 	setTest(true);
