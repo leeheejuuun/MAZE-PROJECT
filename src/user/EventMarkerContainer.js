@@ -10,9 +10,7 @@ export default function EventMarkerContainer({
 	onClick,
 	activeItem,
 }) {
-	const [isVisible, setIsVisible] = useState(
-		data.road_name_address === activeItem.road_name_address,
-	);
+	const [isVisible, setIsVisible] = useState(data.name === activeItem.name);
 
 	const handleOpen = useCallback(() => {
 		setIsVisible(prev => !prev);
@@ -20,7 +18,7 @@ export default function EventMarkerContainer({
 	}, [activeItem, onClick]);
 
 	useEffect(() => {
-		setIsVisible(data.road_name_address === activeItem.road_name_address);
+		setIsVisible(data.name === activeItem.name);
 	}, [activeItem]);
 
 	useEffect(() => {
