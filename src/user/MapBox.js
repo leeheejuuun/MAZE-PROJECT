@@ -6,16 +6,13 @@ import List from './List';
 import './MapBox.scss';
 import styled from 'styled-components';
 import DistanceButton from './Components/Buttons/DistanceButton';
-// import cafeImg from '../../public/images/premium-icon-cafe-3172984.png';
-// import cafeIcon from '/public/images/premium-icon-cafe-3172984.png';
 
 const MapBox = () => {
 	const { kakao } = window;
 
 	const [state, setState] = useState({
 		// 지도의 초기 위치
-		center: { lat: 37.5738319, lng: 127.1946859 },
-		// { lat: 37.476086, lng: 127.123543 }
+		center: { lat: null, lng: null },
 
 		// 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
 		isPanto: true,
