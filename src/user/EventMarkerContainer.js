@@ -10,7 +10,7 @@ export default function EventMarkerContainer({
 	onClick,
 	activeItem,
 }) {
-	const [isVisible, setIsVisible] = useState(data.name === activeItem.name);
+	const [isVisible, setIsVisible] = useState(data.id === activeItem.id);
 
 	const handleOpen = useCallback(() => {
 		setIsVisible(prev => !prev);
@@ -18,7 +18,7 @@ export default function EventMarkerContainer({
 	}, [activeItem, onClick]);
 
 	useEffect(() => {
-		setIsVisible(data.name === activeItem.name);
+		setIsVisible(data.id === activeItem.id);
 	}, [activeItem]);
 
 	useEffect(() => {
