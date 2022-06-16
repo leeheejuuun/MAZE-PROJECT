@@ -12,7 +12,7 @@ const MapBox = () => {
 
 	const [state, setState] = useState({
 		// 지도의 초기 위치
-		center: { lat: null, lng: null },
+		center: { lat: 37.476086, lng: 127.123543 },
 
 		// 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
 		isPanto: true,
