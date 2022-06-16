@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Map, MapMarker, MarkerClusterer } from 'react-kakao-maps-sdk';
 import EventMarkerContainer from './EventMarkerContainer';
 import TypebatteryButton from './Components/Buttons/TypebatteryButton';
@@ -39,7 +39,6 @@ const MapBox = () => {
 	const [metaTypes, setMetaTypes] = useState([]);
 	const [available, setAvailable] = useState(false);
 
-	console.log(state);
 	const handleReload = () => {
 		if (navigator.geolocation) {
 			// GeoLocation을 이용해서 접속 위치를 얻어옵니다
@@ -149,6 +148,7 @@ const MapBox = () => {
 	// const handleTest = () => {
 	// 	setTest(true);
 	// };
+
 	// 버튼 클릭시 반경 조정
 	const handleClickDistance = e => {
 		if (e.target.value === '250m') {
@@ -193,7 +193,7 @@ const MapBox = () => {
 		// }
 
 		fetch(
-			`http://54.180.104.23:8000/cafes?${new URLSearchParams({
+			`https://54.180.104.23:8000/cafes?${new URLSearchParams({
 				...area,
 			})}`,
 		)
@@ -202,7 +202,7 @@ const MapBox = () => {
 				setCafes(data.results);
 			});
 		fetch(
-			`http://54.180.104.23:8000/evs?${filterBatteryQuery.join('&')}&${new URLSearchParams({
+			`https://54.180.104.23:8000/evs?${filterBatteryQuery.join('&')}&${new URLSearchParams({
 				...area,
 				charger_type_ids: types,
 				usable: available ? 'YES' : 'NO',
@@ -211,7 +211,6 @@ const MapBox = () => {
 			.then(res => res.json())
 			.then(data => {
 				setEv(data.results);
-				console.log(data);
 			});
 	}, [area, filterTypeQuery, filterBatteryQuery, selectedCategory, available]);
 
@@ -223,14 +222,14 @@ const MapBox = () => {
 		}
 
 		fetch(
-			`http://54.180.104.23:8000/cafes/nearest?&user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
+			`https://54.180.104.23:8000/cafes/nearest?&user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
 		)
 			.then(res => res.json())
 			.then(data => {
 				setCafeNearest([data.results]);
 			});
 		fetch(
-			`http://54.180.104.23:8000/evs/nearest?user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
+			`https://54.180.104.23:8000/evs/nearest?user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
 		)
 			.then(res => res.json())
 			.then(data => {
@@ -239,34 +238,19 @@ const MapBox = () => {
 	}, [state]);
 
 	useEffect(() => {
-		fetch('http://54.180.104.23:8000/commons')
+		fetch('https://54.180.104.23:8000/commons')
 			.then(response => response.json())
 			.then(data => {
 				setMetaTypes(data.results.charger.filtering_include_search);
 			});
-		fetch('http://54.180.104.23:8000/commons')
+		fetch('https://54.180.104.23:8000/commons')
 			.then(response => response.json())
 			.then(data => {
 				setMetaOutputs(data.results.charger.outputs.output);
 			});
 	}, []);
 
-	// useEffect(() => {
-	// 	fetch(`http://54.180.104.23:8000/commons?query=${available.query}`)
-	// 		.then(response => response.json())
-	// 		.then(data => {
-	// 			console.log(data.results.charger.usable, 'data.results.charger.usable');
-	// 			setAvailable(data.results.charger.usable);
-	// 		});
-	// }, []);
-
-	// console.log(filterBatteryQuery);
-
-	// console.log(metaData);
-	// console.log(
-	// 	metaData.charger.filtering_include_search && metaData.charger.filtering_include_search,
-	// );
-	// console.log(metaData.charger.outputs.output);
+	const [overlayOut, setOverlayOut] = useState(false);
 
 	return (
 		<MapWrap>
@@ -321,6 +305,7 @@ const MapBox = () => {
 										},
 									}}
 									selectedCategory={selectedCategory}
+									overlayOut={overlayOut}
 								/>
 							))}
 
@@ -348,6 +333,7 @@ const MapBox = () => {
 										},
 									}}
 									selectedCategory={selectedCategory}
+									overlayOut={overlayOut}
 								/>
 							))}
 					</MarkerClusterer>
@@ -432,7 +418,7 @@ const MapBox = () => {
 							{cafes.map((data, index) => (
 								<LookingList key={index}>
 									<a
-										href={`https://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
+										href={`httpss://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
 										target="_blank"
 										rel="noreferrer"
 										style={{ textDecoration: 'none', color: 'black' }}
@@ -460,7 +446,7 @@ const MapBox = () => {
 							{ev.map(data => (
 								<LookingList key={data.id}>
 									<a
-										href={`https://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
+										href={`httpss://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
 										target="_blank"
 										rel="noreferrer"
 										style={{ textDecoration: 'none', color: 'black' }}

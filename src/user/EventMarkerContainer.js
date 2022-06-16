@@ -1,14 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapMarker } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 
-export default function EventMarkerContainer({ data, position, image, selectedCategory }) {
+export default function EventMarkerContainer({
+	data,
+	position,
+	image,
+	selectedCategory,
+	overlayOut,
+}) {
 	const [isVisible, setIsVisible] = useState(false);
 
 	const handleOpen = () => {
-		setIsVisible(prev => !prev);
+		if (data.id) {
+			setIsVisible(prev => !prev);
+		}
 	};
 
+	useEffect(() => {
+		console.log(data);
+	}, [data]);
 	return (
 		<MapMarker
 			position={position}
