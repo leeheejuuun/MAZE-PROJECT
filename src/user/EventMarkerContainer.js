@@ -2,24 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { MapMarker } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 
-export default function EventMarkerContainer({
-	data,
-	position,
-	image,
-	selectedCategory,
-	overlayOut,
-}) {
+export default function EventMarkerContainer({ data, position, image, selectedCategory, evData }) {
 	const [isVisible, setIsVisible] = useState(false);
 
 	const handleOpen = () => {
-		if (data.id) {
+		if (evData.id !== data.id) {
 			setIsVisible(prev => !prev);
 		}
 	};
 
 	useEffect(() => {
-		console.log(data);
+		console.log(data.id);
 	}, [data]);
+
 	return (
 		<MapMarker
 			position={position}
@@ -28,6 +23,7 @@ export default function EventMarkerContainer({
 			infoWindowOptions={{
 				zIndex: 9999,
 			}}
+			disableAutoPan={false}
 		>
 			{isVisible && (
 				<div>

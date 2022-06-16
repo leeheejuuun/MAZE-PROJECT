@@ -39,41 +39,7 @@ const MapBox = () => {
 	const [metaTypes, setMetaTypes] = useState([]);
 	const [available, setAvailable] = useState(false);
 
-	const handleReload = () => {
-		if (navigator.geolocation) {
-			// GeoLocation을 이용해서 접속 위치를 얻어옵니다
-			navigator.geolocation.getCurrentPosition(
-				position => {
-					setState(prev => ({
-						...prev,
-						center: {
-							lat: position.coords.latitude, // 위도
-							lng: position.coords.longitude, // 경도
-						},
-						isLoading: false,
-					}));
-				},
-				err => {
-					setState(prev => ({
-						...prev,
-						errMsg: err.message,
-						isLoading: false,
-					}));
-				},
-			);
-		} else {
-			// HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-			setState(prev => ({
-				...prev,
-				errMsg: 'geolocation을 사용할수 없어요..',
-				isLoading: false,
-			}));
-		}
-	};
-
-	// const [test, setTest] = useState(false);
-
-	// useEffect(() => {
+	// const handleReload = () => {
 	// 	if (navigator.geolocation) {
 	// 		// GeoLocation을 이용해서 접속 위치를 얻어옵니다
 	// 		navigator.geolocation.getCurrentPosition(
@@ -103,10 +69,39 @@ const MapBox = () => {
 	// 			isLoading: false,
 	// 		}));
 	// 	}
-	// }, []);
+	// };
 
-	// console.log(state);
-	// console.log(area);
+	useEffect(() => {
+		if (navigator.geolocation) {
+			// GeoLocation을 이용해서 접속 위치를 얻어옵니다
+			navigator.geolocation.getCurrentPosition(
+				position => {
+					setState(prev => ({
+						...prev,
+						center: {
+							lat: position.coords.latitude, // 위도
+							lng: position.coords.longitude, // 경도
+						},
+						isLoading: false,
+					}));
+				},
+				err => {
+					setState(prev => ({
+						...prev,
+						errMsg: err.message,
+						isLoading: false,
+					}));
+				},
+			);
+		} else {
+			// HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+			setState(prev => ({
+				...prev,
+				errMsg: 'geolocation을 사용할수 없어요..',
+				isLoading: false,
+			}));
+		}
+	}, []);
 
 	useEffect(() => {
 		const coffeeMenu = document.getElementById('coffeeMenu');
@@ -141,9 +136,9 @@ const MapBox = () => {
 	};
 
 	// 현위치로 새로고침
-	// const handleReload = () => {
-	// 	window.location.reload();
-	// };
+	const handleReload = () => {
+		window.location.reload();
+	};
 
 	// const handleTest = () => {
 	// 	setTest(true);
@@ -193,7 +188,7 @@ const MapBox = () => {
 		// }
 
 		fetch(
-			`https://54.180.104.23:8000/cafes?${new URLSearchParams({
+			`http://54.180.104.23:8000/cafes?${new URLSearchParams({
 				...area,
 			})}`,
 		)
@@ -202,7 +197,7 @@ const MapBox = () => {
 				setCafes(data.results);
 			});
 		fetch(
-			`https://54.180.104.23:8000/evs?${filterBatteryQuery.join('&')}&${new URLSearchParams({
+			`http://54.180.104.23:8000/evs?${filterBatteryQuery.join('&')}&${new URLSearchParams({
 				...area,
 				charger_type_ids: types,
 				usable: available ? 'YES' : 'NO',
@@ -222,14 +217,14 @@ const MapBox = () => {
 		}
 
 		fetch(
-			`https://54.180.104.23:8000/cafes/nearest?&user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
+			`http://54.180.104.23:8000/cafes/nearest?&user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
 		)
 			.then(res => res.json())
 			.then(data => {
 				setCafeNearest([data.results]);
 			});
 		fetch(
-			`https://54.180.104.23:8000/evs/nearest?user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
+			`http://54.180.104.23:8000/evs/nearest?user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
 		)
 			.then(res => res.json())
 			.then(data => {
@@ -238,19 +233,21 @@ const MapBox = () => {
 	}, [state]);
 
 	useEffect(() => {
-		fetch('https://54.180.104.23:8000/commons')
+		fetch('http://54.180.104.23:8000/commons')
 			.then(response => response.json())
 			.then(data => {
 				setMetaTypes(data.results.charger.filtering_include_search);
 			});
-		fetch('https://54.180.104.23:8000/commons')
+		fetch('http://54.180.104.23:8000/commons')
 			.then(response => response.json())
 			.then(data => {
 				setMetaOutputs(data.results.charger.outputs.output);
 			});
 	}, []);
-
-	const [overlayOut, setOverlayOut] = useState(false);
+	/////////////////////////////////
+	useEffect(() => {
+		console.log(ev.id);
+	}, [ev]);
 
 	return (
 		<MapWrap>
@@ -305,7 +302,6 @@ const MapBox = () => {
 										},
 									}}
 									selectedCategory={selectedCategory}
-									overlayOut={overlayOut}
 								/>
 							))}
 
@@ -315,6 +311,7 @@ const MapBox = () => {
 									key={data.id}
 									position={{ lat: data.latitude, lng: data.longitude }}
 									data={data}
+									evData={ev}
 									image={{
 										src: `${
 											data.chargers[0].usable_by_filtering === 'YES'
@@ -333,7 +330,6 @@ const MapBox = () => {
 										},
 									}}
 									selectedCategory={selectedCategory}
-									overlayOut={overlayOut}
 								/>
 							))}
 					</MarkerClusterer>
@@ -418,7 +414,7 @@ const MapBox = () => {
 							{cafes.map((data, index) => (
 								<LookingList key={index}>
 									<a
-										href={`httpss://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
+										href={`https://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
 										target="_blank"
 										rel="noreferrer"
 										style={{ textDecoration: 'none', color: 'black' }}
@@ -446,7 +442,7 @@ const MapBox = () => {
 							{ev.map(data => (
 								<LookingList key={data.id}>
 									<a
-										href={`httpss://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
+										href={`https://map.kakao.com/link/to/${data.name},${data.latitude},${data.longitude}`}
 										target="_blank"
 										rel="noreferrer"
 										style={{ textDecoration: 'none', color: 'black' }}
