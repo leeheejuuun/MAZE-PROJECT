@@ -6,13 +6,16 @@ import List from './List';
 import './MapBox.scss';
 import styled from 'styled-components';
 import DistanceButton from './Components/Buttons/DistanceButton';
+// import cafeImg from '../../public/images/premium-icon-cafe-3172984.png';
+// import cafeIcon from '/public/images/premium-icon-cafe-3172984.png';
 
 const MapBox = () => {
 	const { kakao } = window;
 
 	const [state, setState] = useState({
 		// 지도의 초기 위치
-		center: { lat: 37.476086, lng: 127.123543 },
+		center: { lat: 37.5738319, lng: 127.1946859 },
+		// { lat: 37.476086, lng: 127.123543 }
 
 		// 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
 		isPanto: true,
@@ -35,38 +38,61 @@ const MapBox = () => {
 	const [metaOutputs, setMetaOutputs] = useState([]);
 	const [metaTypes, setMetaTypes] = useState([]);
 	const [available, setAvailable] = useState(false);
+	const [activeItem, setActiveItem] = useState({});
+	const map = useRef();
+	const handleReload = () => {
+		if (navigator.geolocation) {
+			// GeoLocation을 이용해서 접속 위치를 얻어옵니다
+			navigator.geolocation.getCurrentPosition(
+				position => {
+					setState(prev => ({
+						...prev,
+						center: {
+							lat: position.coords.latitude, // 위도
+							lng: position.coords.longitude, // 경도
+						},
+						isLoading: false,
+					}));
 
-	// const handleReload = () => {
-	// 	if (navigator.geolocation) {
-	// 		// GeoLocation을 이용해서 접속 위치를 얻어옵니다
-	// 		navigator.geolocation.getCurrentPosition(
-	// 			position => {
-	// 				setState(prev => ({
-	// 					...prev,
-	// 					center: {
-	// 						lat: position.coords.latitude, // 위도
-	// 						lng: position.coords.longitude, // 경도
-	// 					},
-	// 					isLoading: false,
-	// 				}));
-	// 			},
-	// 			err => {
-	// 				setState(prev => ({
-	// 					...prev,
-	// 					errMsg: err.message,
-	// 					isLoading: false,
-	// 				}));
-	// 			},
-	// 		);
-	// 	} else {
-	// 		// HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-	// 		setState(prev => ({
-	// 			...prev,
-	// 			errMsg: 'geolocation을 사용할수 없어요..',
-	// 			isLoading: false,
-	// 		}));
-	// 	}
-	// };
+					// map.current.panTo(
+					// 	new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude),
+					// );
+				},
+				err => {
+					setState(prev => ({
+						...prev,
+						errMsg: err.message,
+						isLoading: false,
+					}));
+				},
+			);
+		} else {
+			fetch('https://geolocation-db.com/json/')
+				.then(res => res.json())
+				.then(data => {
+					const { latitude, longitude } = data;
+					setState(prev => ({
+						...prev,
+						center: {
+							lat: latitude, // 위도
+							lng: longitude, // 경도
+						},
+						isLoading: false,
+					}));
+				})
+				.catch(e => {
+					console.log(e, 'ddd');
+					setState(prev => ({
+						...prev,
+						errMsg: 'geolocation을 사용할수 없어요..',
+						isLoading: false,
+					}));
+				});
+			// HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+		}
+	};
+
+	// const [test, setTest] = useState(false);
 
 	// useEffect(() => {
 	// 	if (navigator.geolocation) {
@@ -99,6 +125,9 @@ const MapBox = () => {
 	// 		}));
 	// 	}
 	// }, []);
+
+	// console.log(state);
+	// console.log(area);
 
 	useEffect(() => {
 		const coffeeMenu = document.getElementById('coffeeMenu');
@@ -133,9 +162,9 @@ const MapBox = () => {
 	};
 
 	// 현위치로 새로고침
-	const handleReload = () => {
-		window.location.reload();
-	};
+	// const handleReload = () => {
+	// 	window.location.reload();
+	// };
 
 	// const handleTest = () => {
 	// 	setTest(true);
@@ -242,9 +271,6 @@ const MapBox = () => {
 			});
 	}, []);
 	/////////////////////////////////
-	useEffect(() => {
-		console.log(ev.id);
-	}, [ev]);
 
 	return (
 		<MapWrap>
@@ -261,6 +287,7 @@ const MapBox = () => {
 			<MapWrapper>
 				<Map // 지도를 표시할 Container
 					id="map"
+					ref={map}
 					center={state.center}
 					style={{
 						// 지도의 크기
@@ -282,7 +309,9 @@ const MapBox = () => {
 						{selectedCategory === 'coffee' &&
 							cafes.map((data, index) => (
 								<EventMarkerContainer
-									key={index}
+									onClick={data => setActiveItem(data)}
+									activeItem={activeItem}
+									key={data.name}
 									position={{ lat: data.latitude, lng: data.longitude }}
 									data={data}
 									image={{
@@ -305,10 +334,11 @@ const MapBox = () => {
 						{selectedCategory === 'ev' &&
 							ev.map(data => (
 								<EventMarkerContainer
+									onClick={data => setActiveItem(data)}
+									activeItem={activeItem}
 									key={data.id}
 									position={{ lat: data.latitude, lng: data.longitude }}
 									data={data}
-									evData={ev}
 									image={{
 										src: `${
 											data.chargers[0].usable_by_filtering === 'YES'

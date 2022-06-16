@@ -1,18 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { MapMarker } from 'react-kakao-maps-sdk';
 import styled from 'styled-components';
 
-export default function EventMarkerContainer({ data, position, image, selectedCategory, evData }) {
-	const [isVisible, setIsVisible] = useState(false);
+export default function EventMarkerContainer({
+	data,
+	position,
+	image,
+	selectedCategory,
+	onClick,
+	activeItem,
+}) {
+	const [isVisible, setIsVisible] = useState(
+		data.road_name_address === activeItem.road_name_address,
+	);
 
-	const handleOpen = () => {
-		if (evData.id !== data.id) {
-			setIsVisible(prev => !prev);
-		}
-	};
+	const handleOpen = useCallback(() => {
+		setIsVisible(prev => !prev);
+		onClick(data);
+	}, [activeItem, onClick]);
 
 	useEffect(() => {
-		console.log(data.id);
+		setIsVisible(data.road_name_address === activeItem.road_name_address);
+	}, [activeItem]);
+
+	useEffect(() => {
+		console.log(data);
 	}, [data]);
 
 	return (
