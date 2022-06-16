@@ -14,7 +14,7 @@ const MapBox = () => {
 
 	const [state, setState] = useState({
 		// 지도의 초기 위치
-		center: { lat: 37.5666805, lng: 126.9784147 },
+		center: { lat: 37.5738319, lng: 127.1946859 },
 		// { lat: 37.476086, lng: 127.123543 }
 
 		// 지도 위치 변경시 panto를 이용할지(부드럽게 이동)
@@ -39,6 +39,7 @@ const MapBox = () => {
 	const [metaTypes, setMetaTypes] = useState([]);
 	const [available, setAvailable] = useState(false);
 
+	console.log(state);
 	const handleReload = () => {
 		if (navigator.geolocation) {
 			// GeoLocation을 이용해서 접속 위치를 얻어옵니다
