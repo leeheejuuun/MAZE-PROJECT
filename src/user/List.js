@@ -17,8 +17,11 @@ const Lists = styled.li`
 	display: flex;
 	text-align: center;
 	align-items: center;
-	/* height: 30px; */
-	margin-top: 7px;
+	border-bottom: 1px solid red;
+	border-width: medium;
+	justify-content: center;
+	width: 290px;
+	margin-top: 10px;
 	magin-bottom: 7px;
 	font-weight: 700;
 `;

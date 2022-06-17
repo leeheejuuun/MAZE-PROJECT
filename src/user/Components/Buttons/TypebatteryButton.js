@@ -15,19 +15,21 @@ const Btn = styled.button`
 			return css`
 				border-radius: 10px;
 				background-color: #14c9f2;
-				border: 1px solid rgba(0, 0, 0, 0.1);
+				border: 1px solid rgba(0, 0, 0, 0.2);
 				color: #fff;
 				margin-right: 5px;
 				padding: 5px;
+				font-weight: 500;
 			`;
 		} else {
 			return css`
 				border-radius: 10px;
 				background-color: #fff;
-				border: 1px solid rgba(0, 0, 0, 0.2);
+				border: 1px solid rgba(0, 0, 0, 0.4);
 				color: #14c9f2;
 				margin-right: 5px;
 				padding: 5px;
+				font-weight: 500;
 			`;
 		}
 	}};

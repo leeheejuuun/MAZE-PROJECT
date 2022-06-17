@@ -477,9 +477,8 @@ const LookingListWrap = styled.ul`
 	overflow-y: scroll;
 `;
 const LookingList = styled.li`
-	border: 1px solid rgba(0, 0, 0, 0.2);
+	border: 1px solid rgba(0, 0, 0, 0.4);
 	border-radius: 10px;
-	height: 35px;
 	width: 270px;
 	margin-bottom: 10px;
 	display: flex;

@@ -158,7 +158,7 @@ const MetaContent = styled.span`
 
 const StatusWrap = styled.span`
 	font-size: 13px;
-	font-weight: 400;
+	font-weight: 800;
 	color: ${props =>
 		props.unidentified || props.stop || props.inspection || props.charging || props.error
 			? 'red'
@@ -174,6 +174,6 @@ const MetaListTitle = styled.span`
 const Directions = styled.a`
 	color: blue;
 	outline: none;
-	margin-left: 4px;
-	font-size: 5px;
+	/* margin-left: 8px; */
+	font-size: 15px;
 `;
