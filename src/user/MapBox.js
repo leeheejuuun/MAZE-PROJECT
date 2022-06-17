@@ -373,8 +373,8 @@ const MapBox = () => {
 							style={{
 								fontWeight: '700',
 								marginTop: '10px',
-								borderBottom: '1px dotted black',
-								borderWidth: 'medium',
+								// borderBottom: '1px dotted black',
+								// borderWidth: 'medium',
 								display: 'flex',
 								width: '290px',
 								justifyContent: 'center',
@@ -412,8 +412,8 @@ const MapBox = () => {
 								fontWeight: '700',
 								marginTop: '10px',
 								marginBottom: '5px',
-								borderBottom: '1px dotted black',
-								borderWidth: 'medium',
+								// borderBottom: '1px dotted black',
+								// borderWidth: 'medium',
 								justifyContent: 'center',
 							}}
 						>
