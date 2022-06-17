@@ -6,6 +6,7 @@ import List from './List';
 import './MapBox.scss';
 import styled from 'styled-components';
 import DistanceButton from './Components/Buttons/DistanceButton';
+import { API } from '../config';
 // import cafeImg from '../../public/images/premium-icon-cafe-3172984.png';
 // import cafeIcon from '/public/images/premium-icon-cafe-3172984.png';
 
@@ -215,7 +216,7 @@ const MapBox = () => {
 		// }
 
 		fetch(
-			`http://54.180.104.23:8000/cafes?${new URLSearchParams({
+			`${API.CAFE}${new URLSearchParams({
 				...area,
 			})}`,
 		)
@@ -224,7 +225,7 @@ const MapBox = () => {
 				setCafes(data.results);
 			});
 		fetch(
-			`http://54.180.104.23:8000/evs?${filterBatteryQuery.join('&')}&${new URLSearchParams({
+			`${API.EV}?${filterBatteryQuery.join('&')}&${new URLSearchParams({
 				...area,
 				charger_type_ids: types,
 				usable: available ? 'YES' : 'NO',
@@ -244,15 +245,13 @@ const MapBox = () => {
 		}
 
 		fetch(
-			`http://54.180.104.23:8000/cafes/nearest?&user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
+			`${API.CAFE}/nearest?&user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
 		)
 			.then(res => res.json())
 			.then(data => {
 				setCafeNearest([data.results]);
 			});
-		fetch(
-			`http://54.180.104.23:8000/evs/nearest?user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`,
-		)
+		fetch(`${API.EV}nearest?user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`)
 			.then(res => res.json())
 			.then(data => {
 				setEvNearest([data.results]);
@@ -260,12 +259,12 @@ const MapBox = () => {
 	}, [state]);
 
 	useEffect(() => {
-		fetch('http://54.180.104.23:8000/commons')
+		fetch(`${API.COMMONS}`)
 			.then(response => response.json())
 			.then(data => {
 				setMetaTypes(data.results.charger.filtering_include_search);
 			});
-		fetch('http://54.180.104.23:8000/commons')
+		fetch(`${API.COMMONS}`)
 			.then(response => response.json())
 			.then(data => {
 				setMetaOutputs(data.results.charger.outputs.output);
