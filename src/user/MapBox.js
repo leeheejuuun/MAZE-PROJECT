@@ -42,60 +42,6 @@ const MapBox = () => {
 	const [activeItem, setActiveItem] = useState({});
 	const map = useRef();
 
-	// const handleReload = () => {
-	// 	if (!navigator.geolocation) {
-	// 		// GeoLocation을 이용해서 접속 위치를 얻어옵니다
-	// 		navigator.geolocation.getCurrentPosition(
-	// 			position => {
-	// 				setState(prev => ({
-	// 					...prev,
-	// 					center: {
-	// 						lat: position.coords.latitude, // 위도
-	// 						lng: position.coords.longitude, // 경도
-	// 					},
-	// 					isLoading: false,
-	// 				}));
-
-	// 				// map.current.panTo(
-	// 				// 	new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude),
-	// 				// );
-	// 			},
-	// 			err => {
-	// 				setState(prev => ({
-	// 					...prev,
-	// 					errMsg: err.message,
-	// 					isLoading: false,
-	// 				}));
-	// 			},
-	// 		);
-	// 	} else {
-	// 		fetch('https://geolocation-db.com/json/')
-	// 			.then(res => res.json())
-	// 			.then(data => {
-	// 				const { latitude, longitude } = data;
-	// 				setState(prev => ({
-	// 					...prev,
-	// 					center: {
-	// 						lat: latitude, // 위도
-	// 						lng: longitude, // 경도
-	// 					},
-	// 					isLoading: false,
-	// 				}));
-	// 			})
-	// 			.catch(e => {
-	// 				console.log(e, 'ddd');
-	// 				setState(prev => ({
-	// 					...prev,
-	// 					errMsg: 'geolocation을 사용할수 없어요..',
-	// 					isLoading: false,
-	// 				}));
-	// 			});
-	// 		// HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
-	// 	}
-	// };
-
-	// const [test, setTest] = useState(false);
-
 	useEffect(() => {
 		if (navigator.geolocation) {
 			// GeoLocation을 이용해서 접속 위치를 얻어옵니다
@@ -127,9 +73,6 @@ const MapBox = () => {
 			}));
 		}
 	}, []);
-
-	// console.log(state);
-	// console.log(area);
 
 	useEffect(() => {
 		const coffeeMenu = document.getElementById('coffeeMenu');
@@ -205,15 +148,8 @@ const MapBox = () => {
 		if (area === null) {
 			return;
 		}
-		// } else if (state.center.lat === null) {
-		// 	return;
-		// }
 
 		const types = [...new Set([...filterTypeQuery.join(',').split(',')])].sort().join('').slice();
-
-		// if (selectedCategory === 'coffee') {
-		// 	return;
-		// }
 
 		fetch(
 			`${API.CAFE}?${new URLSearchParams({
@@ -270,7 +206,6 @@ const MapBox = () => {
 				setMetaOutputs(data.results.charger.outputs.output);
 			});
 	}, []);
-	/////////////////////////////////
 
 	return (
 		<MapWrap>
@@ -322,7 +257,7 @@ const MapBox = () => {
 										}, // 마커이미지의 크기입니다
 										options: {
 											offset: {
-												x: 27,
+												x: 9,
 												y: 69,
 											}, // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 										},
@@ -351,7 +286,7 @@ const MapBox = () => {
 										}, // 마커이미지의 크기입니다.
 										options: {
 											offset: {
-												x: 6,
+												x: 5,
 												y: 73,
 											}, // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 										},
@@ -460,7 +395,6 @@ const MapBox = () => {
 					))}
 				{selectedCategory === 'coffee' && (
 					<>
-						{/* {(filterBatteryQuery, filterTypeQuery)} */}
 						<div style={{ fontWeight: '700', marginTop: '10px', marginBottom: '5px' }}>
 							보고계신 지역에는 {ev.length}개의 충전소가 있습니다.
 						</div>
@@ -533,20 +467,6 @@ const SearchBtn = styled.button`
 const MapWrapper = styled.div`
 	position: relative;
 `;
-
-// const ListWrap = styled.ul`
-// 	border: 1px solid rgba(0, 0, 0, 0.4);
-// 	border-color: #14c9f2;
-// 	border-radius: 10px;
-// 	display: flex;
-// 	flex-direction: column;
-// 	align-items: center;
-// 	padding: 0;
-// 	overflow-y: scroll;
-// 	max-height: 100px;
-// 	margin-top: 7px;
-// 	width: 350px;
-// `;
 
 const LookingListWrap = styled.ul`
 	magin-top: 5px;

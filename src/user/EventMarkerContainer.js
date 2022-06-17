@@ -21,10 +21,6 @@ export default function EventMarkerContainer({
 		setIsVisible(data.id === activeItem.id);
 	}, [activeItem]);
 
-	useEffect(() => {
-		console.log(data);
-	}, [data]);
-
 	return (
 		<MapMarker
 			position={position}
