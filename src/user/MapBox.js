@@ -251,7 +251,7 @@ const MapBox = () => {
 			.then(data => {
 				setCafeNearest([data.results]);
 			});
-		fetch(`${API.EV}nearest?user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`)
+		fetch(`${API.EV}/nearest?user_longitude=${state.center.lng}&user_latitude=${state.center.lat}`)
 			.then(res => res.json())
 			.then(data => {
 				setEvNearest([data.results]);
