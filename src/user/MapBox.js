@@ -369,7 +369,17 @@ const MapBox = () => {
 					))}
 				{selectedCategory === 'ev' && (
 					<>
-						<div style={{ fontWeight: '700', marginTop: '10px' }}>
+						<div
+							style={{
+								fontWeight: '700',
+								marginTop: '10px',
+								borderBottom: '1px dotted black',
+								borderWidth: 'medium',
+								display: 'flex',
+								width: '290px',
+								justifyContent: 'center',
+							}}
+						>
 							보고계신 지역에는 {cafes.length}개의 카페가 있습니다.
 						</div>
 						<LookingListWrap>
@@ -395,7 +405,18 @@ const MapBox = () => {
 					))}
 				{selectedCategory === 'coffee' && (
 					<>
-						<div style={{ fontWeight: '700', marginTop: '10px', marginBottom: '5px' }}>
+						<div
+							style={{
+								display: 'flex',
+								width: '290px',
+								fontWeight: '700',
+								marginTop: '10px',
+								marginBottom: '5px',
+								borderBottom: '1px dotted black',
+								borderWidth: 'medium',
+								justifyContent: 'center',
+							}}
+						>
 							보고계신 지역에는 {ev.length}개의 충전소가 있습니다.
 						</div>
 

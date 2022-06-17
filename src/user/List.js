@@ -17,7 +17,7 @@ const Lists = styled.li`
 	display: flex;
 	text-align: center;
 	align-items: center;
-	border-bottom: 1px solid red;
+	border-bottom: 1px dotted black;
 	border-width: medium;
 	justify-content: center;
 	width: 290px;

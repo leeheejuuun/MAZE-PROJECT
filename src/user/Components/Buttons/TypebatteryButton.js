@@ -19,7 +19,7 @@ const Btn = styled.button`
 				color: #fff;
 				margin-right: 5px;
 				padding: 5px;
-				font-weight: 500;
+				font-weight: 600;
 			`;
 		} else {
 			return css`
@@ -29,7 +29,7 @@ const Btn = styled.button`
 				color: #14c9f2;
 				margin-right: 5px;
 				padding: 5px;
-				font-weight: 500;
+				font-weight: 600;
 			`;
 		}
 	}};
