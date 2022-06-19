@@ -7,11 +7,13 @@ import './MapBox.scss';
 import styled from 'styled-components';
 import DistanceButton from './Components/Buttons/DistanceButton';
 import { API } from '../config';
+import { useNavigate } from 'react-router-dom';
 // import cafeImg from '../../public/images/premium-icon-cafe-3172984.png';
 // import cafeIcon from '/public/images/premium-icon-cafe-3172984.png';
 
 const MapBox = () => {
 	const { kakao } = window;
+	const navigate = useNavigate();
 
 	const [state, setState] = useState({
 		// 지도의 초기 위치
@@ -41,6 +43,12 @@ const MapBox = () => {
 	const [available, setAvailable] = useState(false);
 	const [activeItem, setActiveItem] = useState({});
 	const map = useRef();
+
+	useEffect(() => {
+		if (!sessionStorage.getItem('isLogin')) {
+			navigate('/');
+		}
+	}, [navigate]);
 
 	useEffect(() => {
 		if (navigator.geolocation) {
