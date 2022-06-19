@@ -10,7 +10,9 @@ export default function Login() {
 	const handleSubmit = e => {
 		e.preventDefault();
 
-		if (e.target[0].value !== ID && e.target[1].value !== PW) {
+		if (e.target[0].value === ID && e.target[1].value === PW) {
+			navigate('user');
+		} else {
 			alert('아이디 및 비밀번호를 확인 해 주세요.');
 			return;
 		}
