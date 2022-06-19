@@ -60,7 +60,7 @@ const LogoImgWrap = styled.div`
 
 const LogoImg = styled.img`
 	width: 300px;
-	margin-top: 100px;
+	margin-top: 150px;
 `;
 
 const Input = styled.input`
