@@ -38,8 +38,12 @@ EV 충전기, 교외지 카페 현황 파악/검색을 위한 기본 목업 UI/U
 
 User 페이지 배포 전 localhost (개발환경) 에서는 잘 동작 하던 geolocation이 AWS (http) 배포 후 동작하지 않았고
 무엇 때문에 동작하지 않는지 판단하는데 거의 반나절 이라는 시간이 흘렀습니다.</br>
-Network 탭에서 kakao map은 status code 200을 출력하고있지만, 콘솔 창에는 에러메세지는 단 한개도 출력되지 않았으며 User 페이지에서도 지도 배경이미지만 흰색이었습니다.</br>
+
+Network 탭에서 kakao map은 status code 200을 출력하고있지만, </br>콘솔 창에는 에러메세지는 단 한개도 출력되지 않았으며 User 페이지에서도 지도 배경이미지만 흰색이었습니다.</br>
+
 다시 처음으로 돌아가 천천히 kakao map api docs를 읽어보던 중 geolocation은 https 환경에서만 동작한다 라는 걸 보고 알아차리게 되었습니다.
+
+</br>
 
 #### 트러블 슈팅 : Netlify
 
@@ -79,7 +83,9 @@ geolocation이 작동되지않는다면 즉, 현위치를 불러오지 못한다
 
 </br>
 
-![현위치 및 지도확대,축소](https://user-images.githubusercontent.com/94230809/210774873-38d65d71-22a4-403c-b4fd-8e24064ce118.gif)
+<img src="https://user-images.githubusercontent.com/94230809/210774873-38d65d71-22a4-403c-b4fd-8e24064ce118.gif" width="250" height="350">
+
+</br>
 
 첫 렌더링 시 지도 축척은 100m / 1:7,600
 </br>
@@ -97,9 +103,121 @@ geolocation이 작동되지않는다면 즉, 현위치를 불러오지 못한다
 
 </br>
 
+<img src="https://user-images.githubusercontent.com/94230809/210775881-7755a8d7-eb3a-4bc3-b44a-bbede8886650.gif" width="250" height="350">
+
+</br>
+
 지도 왼쪽 상단 카테고리가 충전소 일때 (가까운 카페 거리 및 카페 리스트 출력)
 </br>
 
 지도 왼쪽 상단 카테고리가 카페 일때 (가까운 충전소 거리 및 충전소 리스트 출력)
 
 - 축척 2km 넘어가는 경우에는 마커클러스터 적용
+  </br>
+  </br>
+
+### 마커 클릭시 인포윈도우
+
+</br>
+
+<img src="https://user-images.githubusercontent.com/94230809/210776453-3bbab8b1-1c13-4471-a63e-01e792b9e0e8.gif" width="250" height="350">
+
+</br>
+
+마커 클릭 시 해당 충전소 및 카페에 대한 정보를
+인포윈도우로 출력
+
+충전소 :
+
+주소 , 주차 가능여부 (Y / N) ,</br>
+출입정보 , 충전기업체명 ,</br>
+스테이션에 총 충전기 대수 ,</br>
+충전기 타입 및 충전기 상태
+(ex : ac완속 - 충전대기 , dc차데모 - 충전중)
+
+- 길찾기
+
+  </br>
+
+카페 :
+
+주소 , 길찾기
+</br>
+</br>
+
+### 다중 필터링
+
+</br>
+
+<img src="https://user-images.githubusercontent.com/94230809/210776793-41d1be0b-d22d-43e8-bec7-c9a2c8a82568.gif" width="250" height="350">
+
+</br>
+
+1개의 충전소 스테이션 내 1개의 충전기라도 충전 가능한 상태 (충전 대기) 일때 녹색 아이콘으로 출력
+
+전부 충전 불가한 상태 (충전중 , 고장 , 상태미확인 등) 일때
+빨간색 아이콘으로 출력
+
+#### 필터링
+
+사용가능한 충전소 보기 클릭시 녹색 (사용가능한 충전소) 만 출력
+
+충전기 타입 및 충전용량 클릭시 해당하는 충전기가 포함 되는 경우 출력
+
+- 다중 필터링 가능 (충전기 타입 ,용량 사용자가 원하는 버튼 다중 클릭 가능 )
+
+<img width="250" alt="스크린샷 2023-01-05 오후 9 07 59" src="https://user-images.githubusercontent.com/94230809/210776911-a609bb55-c039-4fed-8dc1-590e60e07fba.png">
+
+</br>
+</br>
+
+### 길찾기
+
+</br>
+
+<img src="https://user-images.githubusercontent.com/94230809/210777553-f0003dda-1ade-4ae4-8aba-35978388181b.gif">
+
+</br>
+
+마커 클릭 후 인포윈도우 클릭 및 카페 , 충전소 리스트 클릭 시
+Kakao map 연결하여 해당 하는 카페 및 충전소를 목적지로 추가
+
+#### Web 접속 시
+
+자동으로 kakao map 웹 페이지로 연결
+
+#### 모바일 접속 시
+
+모바일 접속 시 app이 있다면 app으로 연결 app 이 없다면 웹 페이지로 연결
+</br>
+</br>
+
+### 검색
+
+</br>
+
+<img src="https://user-images.githubusercontent.com/94230809/210778508-8f453b66-cdb1-413d-93c2-aef89ea8b160.gif" width="250" height="350">
+
+</br>
+
+하남시청 , 미사역 , 서울시청 등.. 특정한 지명
+입력시 정확하게 매칭하여 마커를 찍음.
+
+미사 , 서울 , 안양 등 지역으로 입력 시 해당 지역을 지도에서 찾은 후 중심점을 마커로 찍는다.
+
+---
+
+## Netlify 배포
+
+</br>
+Netlify 선택 이유
+
+</br>
+
+- 무료이다.</br>
+  (대역폭 100GB/월. 무제한 정적 웹사이트. )
+
+- 깃허브 등 저장소 사이트와 계정 연동만 하면 클릭 몇 번만으로 각종 애플리케이션을 빌드 및 배포할 수 있다.
+- https를 기본으로 지원합니다. 실제 호스팅 과정에서 https 설정이 쉽지않다.
+  (Geolocation 을 사용하기 위함)
+- git 계정과 연결되어 있기 때문에 commit , push 를 진행하게되면 자동으로 업데이트가 된다.
